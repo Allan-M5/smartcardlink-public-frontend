@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Popup2</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="vcard">
+      <section id="popup2" class="popup">
+        <div class="brand-header">SMARTCARDLINK</div>
+        <div class="card-inner card-scroll">
+          <div class="about-header">
+            <div class="about-title">More About Me</div>
+            <div class="about-bio-box">
+              <div class="bio-label">Bio</div>
+              <div id="bioText" class="bio-text"></div>
+            </div>
+          </div>
+          <div class="links-grid-4">
+            <div class="links-col">
+              <button id="businessWebsite" class="link-btn">Business URL</button>
+              <button id="portfolioWebsite" class="link-btn">Portfolio URL</button>
+            </div>
+            <div class="links-col">
+              <button id="locationMap" class="link-btn">Location Map</button>
+              <button id="physicalAddress" class="link-btn">Physical Address</button>
+            </div>
+          </div>
+          <div class="hours-section">
+            <table class="hours-table" id="hoursTable">
+              <thead><tr><th>Day</th><th>Start</th><th>End</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <button id="bookAppointmentBtn" class="book-btn"><i class="fa fa-calendar-alt"></i> Book Appointment</button>
+          <div class="social-grid">
+            <div class="col">
+              <button id="facebookBtn" class="social-btn facebook-hover"><i class="fa-brands fa-facebook-f"></i> Facebook</button>
+              <button id="instagramBtn" class="social-btn instagram-hover"><i class="fa-brands fa-instagram"></i> Instagram</button>
+              <button id="xBtn" class="social-btn x-hover"><i class="fa-brands fa-x-twitter"></i> X</button>
+            </div>
+            <div class="col">
+              <button id="linkedinBtn" class="social-btn linkedin-hover"><i class="fa-brands fa-linkedin-in"></i> LinkedIn</button>
+              <button id="tiktokBtn" class="social-btn tiktok-hover"><i class="fa-brands fa-tiktok"></i> TikTok</button>
+              <button id="youtubeBtn" class="social-btn youtube-hover"><i class="fa-brands fa-youtube"></i> YouTube</button>
+            </div>
+          </div>
+          <div class="nav-row">
+            <button id="backBtn" class="back-btn">Back</button>
+          </div>
+          <footer class="popup-footer">
+            <div class="powered">Powered by</div>
+            <div class="store">Perfect Parcels Store</div>
+            <div class="location-time">Nairobi, Kenya — <span id="liveTime"></span></div>
+          </footer>
+        </div>
+      </section>
+  </div>
+</body>
+</html>

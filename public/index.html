@@ -1,0 +1,153 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SmartCardLink — vCard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./libs/fontawesome/all.min.css" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="app-bg">
+    <main class="vcard" id="vcard">
+
+      <div class="card-surface" id="popup1">
+        <div class="brand-header">SMARTCARDLINK</div>
+        <div class="card-inner">
+          <div class="photo-area" id="photoArea"></div>
+          
+          <div class="personal-info">
+            <div id="fullName" class="full-name"></div>
+            <div id="jobName" class="job-name"></div>
+            <div id="titlePosition" class="title-position"></div>
+          </div>
+
+          <div class="contact-section">
+            <div class="contact-box">
+              <div class="box-main">
+                <div class="contact-label">Phone:</div>
+                <div class="contact-primary-wrap">
+                  <span id="phoneMain" class="contact-primary"></span>
+                  <button id="phoneDropdownBtn" class="dropdown-btn"><i class="fa fa-chevron-down"></i></button>
+                </div>
+              </div>
+              <div id="phoneList" class="box-list" hidden></div>
+            </div>
+
+            <div class="contact-box">
+              <div class="box-main">
+                <div class="contact-label">Email:</div>
+                <div class="contact-primary-wrap">
+                  <span id="emailMain" class="contact-primary"></span>
+                  <button id="emailDropdownBtn" class="dropdown-btn"><i class="fa fa-chevron-down"></i></button>
+                </div>
+              </div>
+              <div id="emailList" class="box-list" hidden></div>
+            </div>
+          </div>
+
+          <div class="actions-grid">
+            <div class="col">
+              <button id="callBtn" class="action-btn"><i class="fa fa-phone"></i> Call</button>
+              <button id="smsBtn" class="action-btn"><i class="fa fa-comment"></i> Message</button>
+              <button id="waBtn" class="action-btn"><i class="fa-brands fa-whatsapp"></i> Whatsapp</button>
+            </div>
+            <div class="col">
+              <button id="mailBtn" class="action-btn"><i class="fa fa-envelope"></i> Email</button>
+              <button id="printBtn" class="action-btn"><i class="fa fa-print"></i> Print</button>
+              <button id="saveBtn" class="action-btn"><i class="fa fa-address-card"></i> Save</button>
+            </div>
+          </div>
+
+          <div class="nav-row">
+            <button id="moreInfoBtn" class="more-info-btn">More Info</button>
+          </div>
+        </div>
+      </div>
+
+      <section id="popup2" class="popup" hidden>
+        <div class="brand-header">SMARTCARDLINK</div>
+        <div class="card-inner card-scroll">
+          
+          <div class="about-header">
+            <div class="about-title">More About Me</div>
+            <div class="about-bio-box">
+              <div class="bio-label">Bio</div>
+              <div id="bioText" class="bio-text"></div>
+            </div>
+          </div>
+
+          <div class="links-grid-4">
+            <div class="links-col">
+              <button id="businessWebsite" class="link-btn">Business URL</button>
+              <button id="portfolioWebsite" class="link-btn">Portfolio URL</button>
+            </div>
+            <div class="links-col">
+              <button id="locationMap" class="link-btn">Location Map</button>
+              <button id="physicalAddress" class="link-btn">Physical Address</button>
+            </div>
+          </div>
+
+          <div class="hours-section">
+            <table class="hours-table" id="hoursTable">
+              <thead><tr><th>Day</th><th>Start</th><th>End</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <button id="bookAppointmentBtn" class="book-btn"><i class="fa fa-calendar-alt"></i> Book Appointment</button>
+
+          <div class="social-grid">
+            <div class="col">
+              <button id="facebookBtn" class="social-btn facebook-hover"><i class="fa-brands fa-facebook-f"></i> Facebook</button>
+              <button id="instagramBtn" class="social-btn instagram-hover"><i class="fa-brands fa-instagram"></i> Instagram</button>
+              <button id="xBtn" class="social-btn x-hover"><i class="fa-brands fa-x-twitter"></i> X</button>
+            </div>
+            <div class="col">
+              <button id="linkedinBtn" class="social-btn linkedin-hover"><i class="fa-brands fa-linkedin-in"></i> LinkedIn</button>
+              <button id="tiktokBtn" class="social-btn tiktok-hover"><i class="fa-brands fa-tiktok"></i> TikTok</button>
+              <button id="youtubeBtn" class="social-btn youtube-hover"><i class="fa-brands fa-youtube"></i> YouTube</button>
+            </div>
+          </div>
+
+          <div class="nav-row">
+            <button id="backBtn" class="back-btn">Back</button>
+          </div>
+
+          <footer class="popup-footer">
+            <div class="powered">Powered by</div>
+            <div class="store">Perfect Parcels Store</div>
+            <div class="location-time">Nairobi, KENYA — <span id="liveTime"></span></div>
+          </footer>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="./js/vcard.js" defer></script>
+
+  <!-- Small fix: Ensure popups load after DOM -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const popup1 = document.getElementById('popup1');
+      const popup2 = document.getElementById('popup2');
+      const moreInfoBtn = document.getElementById('moreInfoBtn');
+      const backBtn = document.getElementById('backBtn');
+
+      if (moreInfoBtn && backBtn && popup1 && popup2) {
+        moreInfoBtn.addEventListener('click', () => {
+          popup1.hidden = true;
+          popup2.hidden = false;
+        });
+
+        backBtn.addEventListener('click', () => {
+          popup1.hidden = false;
+          popup2.hidden = true;
+        });
+      }
+    });
+  </script>
+</body>
+</html>
