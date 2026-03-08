@@ -86,9 +86,26 @@ body {
 
 @keyframes theme-heartbeat {
   0% {
-    box-shadow: 0 0 15px 2px var(--theme-color);
-    opacity: 0.4;
+    box-shadow: 0 0 28px 6px var(--theme-color), 0 0 48px 10px var(--theme-color);
+    transform: scale(1);
+    opacity: 0.56;
   }
+  35% {
+    box-shadow: 0 0 34px 10px var(--theme-color), 0 0 56px 14px var(--theme-color);
+    transform: scale(1.010);
+    opacity: 0.82;
+  }
+  55% {
+    box-shadow: 0 0 42px 14px var(--theme-color), 0 0 64px 18px var(--theme-color);
+    transform: scale(1.014);
+    opacity: 0.96;
+  }
+  100% {
+    box-shadow: 0 0 28px 6px var(--theme-color), 0 0 48px 10px var(--theme-color);
+    transform: scale(1);
+    opacity: 0.56;
+  }
+}
   50% {
     box-shadow: 0 0 35px 10px var(--theme-color);
     transform: scale(1.005);
@@ -895,9 +912,26 @@ body {
 
 @keyframes theme-heartbeat {
   0% {
-    box-shadow: 0 0 22px 4px var(--theme-color), 0 0 40px 8px var(--theme-color);
-    opacity: 0.48;
+    box-shadow: 0 0 28px 6px var(--theme-color), 0 0 48px 10px var(--theme-color);
+    transform: scale(1);
+    opacity: 0.56;
   }
+  35% {
+    box-shadow: 0 0 34px 10px var(--theme-color), 0 0 56px 14px var(--theme-color);
+    transform: scale(1.010);
+    opacity: 0.82;
+  }
+  55% {
+    box-shadow: 0 0 42px 14px var(--theme-color), 0 0 64px 18px var(--theme-color);
+    transform: scale(1.014);
+    opacity: 0.96;
+  }
+  100% {
+    box-shadow: 0 0 28px 6px var(--theme-color), 0 0 48px 10px var(--theme-color);
+    transform: scale(1);
+    opacity: 0.56;
+  }
+}
   50% {
     box-shadow: 0 0 35px 10px var(--theme-color), 0 0 52px 14px var(--theme-color);
     transform: scale(1.006);
@@ -1080,8 +1114,25 @@ body {
 @keyframes theme-heartbeat {
   0% {
     box-shadow: 0 0 28px 6px var(--theme-color), 0 0 48px 10px var(--theme-color);
+    transform: scale(1);
     opacity: 0.56;
   }
+  35% {
+    box-shadow: 0 0 34px 10px var(--theme-color), 0 0 56px 14px var(--theme-color);
+    transform: scale(1.010);
+    opacity: 0.82;
+  }
+  55% {
+    box-shadow: 0 0 42px 14px var(--theme-color), 0 0 64px 18px var(--theme-color);
+    transform: scale(1.014);
+    opacity: 0.96;
+  }
+  100% {
+    box-shadow: 0 0 28px 6px var(--theme-color), 0 0 48px 10px var(--theme-color);
+    transform: scale(1);
+    opacity: 0.56;
+  }
+}
   50% {
     box-shadow: 0 0 40px 12px var(--theme-color), 0 0 60px 16px var(--theme-color);
     transform: scale(1.007);
@@ -1102,5 +1153,14 @@ body {
 
 .about-title {
   color: #000 !important;
+}
+
+
+.about-title,
+.about-title *,
+#popup2 .about-title,
+#popup2 .about-title * {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
 }
 
