@@ -1071,3 +1071,36 @@ body {
   color: #d5d5d5;
   font-style: italic;
 }
+
+.vcard::before {
+  box-shadow: 0 0 28px 6px var(--theme-color), 0 0 48px 10px var(--theme-color) !important;
+  opacity: 0.72 !important;
+}
+
+@keyframes theme-heartbeat {
+  0% {
+    box-shadow: 0 0 28px 6px var(--theme-color), 0 0 48px 10px var(--theme-color);
+    opacity: 0.56;
+  }
+  50% {
+    box-shadow: 0 0 40px 12px var(--theme-color), 0 0 60px 16px var(--theme-color);
+    transform: scale(1.007);
+    opacity: 0.9;
+  }
+  100% {
+    box-shadow: 0 0 28px 6px var(--theme-color), 0 0 48px 10px var(--theme-color);
+    transform: scale(1);
+    opacity: 0.56;
+  }
+}
+
+
+.hours-table th {
+  color: #000 !important;
+}
+
+
+.about-title {
+  color: #000 !important;
+}
+

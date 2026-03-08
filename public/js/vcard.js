@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   'use strict';
 
   const API_ROOT = (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
@@ -135,14 +135,28 @@
     return safe(phone).replace(/\D/g, '');
   }
 
-  function buildAppointmentUrl(client) {
+    function buildAppointmentUrl(client) {
     const direct = safe(client && client.appointmentUrl).trim();
-    if (direct) return direct;
-    const email = safe(client && client.email1).trim();
-    if (!email) return '';
-    const subject = encodeURIComponent('Appointment Booking Request');
-    const body = encodeURIComponent('Hello, I would like to book an appointment regarding your SmartCardLink profile.');
-    return 'mailto:' + email + '?subject=' + subject + '&body=' + body;
+    if (/^https:\/\/calendar\.google\.com\/calendar\/render/i.test(direct)) {
+      return direct;
+    }
+
+    const clientName = safe(client && client.fullName).trim() || 'SmartCardLink Appointment';
+    const clientEmail = safe(client && client.email1).trim();
+    const clientPhone = safe(client && client.phone1).trim();
+    const location = safe(client && client.address).trim();
+    const publicCard = safe(client && client.vcardUrl).trim();
+
+    const title = encodeURIComponent('Appointment with ' + clientName);
+    const details = encodeURIComponent(
+      'SmartCardLink booking request'
+      + (clientEmail ? '\nClient email: ' + clientEmail : '')
+      + (clientPhone ? '\nClient phone: ' + clientPhone : '')
+      + (publicCard ? '\nVCard: ' + publicCard : '')
+    );
+    const locationParam = location ? '&location=' + encodeURIComponent(location) : '';
+
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + title + '&details=' + details + locationParam;
   }
 
   function bindButton(button, enabled, handler, unavailableMessage) {
@@ -435,24 +449,44 @@
     setHidden(popup2, true);
   }
 
-  async function fetchProfileData(slug) {
+    async function fetchProfileData(slug) {
     if (!slug) {
       showMessage('VCard Identifier not found.', true);
       return null;
     }
+
+    const cacheKey = 'scl_vcard_' + slug;
+
+    try {
+      const cachedRaw = sessionStorage.getItem(cacheKey);
+      if (cachedRaw) {
+        const cached = JSON.parse(cachedRaw);
+        if (cached && cached.data) {
+          return cached.data;
+        }
+      }
+    } catch (error) {}
+
     try {
       showMessage('Loading Professional vCard...', false);
-      const response = await fetch(API_ROOT + '/api/vcard/' + encodeURIComponent(slug), { cache: 'no-store' });
+      const response = await fetch(API_ROOT + '/api/vcard/' + encodeURIComponent(slug), { cache: 'default' });
       const text = await response.text();
       let json = null;
+
       try {
         json = JSON.parse(text);
       } catch (error) {
         throw new Error(response.ok ? 'Invalid profile response.' : text || 'Card not found.');
       }
+
       if (!response.ok || !json || json.status !== 'success' || !json.data) {
         throw new Error((json && json.message) || 'Card not found.');
       }
+
+      try {
+        sessionStorage.setItem(cacheKey, JSON.stringify({ data: json.data, ts: Date.now() }));
+      } catch (error) {}
+
       return json.data;
     } catch (error) {
       showMessage(error.message || 'Failed to load card.', true);
