@@ -3,10 +3,10 @@
     // SPEED FIX: Prefetch data immediately
     const params = new URLSearchParams(window.location.search);
     const slug = params.get('slug');
-    if (slug) fetch(`${window.location.origin}/api/vcard/${slug}`).then(r => r.json()).then(j => { window.cachedData = j.data; });
+    if (slug) fetch(`${API_ROOT}/api/vcard/${slug}`).then(r => r.json()).then(j => { window.cachedData = j.data; });
 
     // AUTO-DETECT API ROOT: Works in local and production without manual changes
-    const API_ROOT = window.location.origin; 
+    const API_ROOT = (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:8080' : 'https://smartcardlink-api.onrender.com'; 
     const el = id => document.getElementById(id);
 
     // DOM References
