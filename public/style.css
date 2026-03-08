@@ -1164,3 +1164,74 @@ body {
   -webkit-text-fill-color: #000 !important;
 }
 
+
+/* === FINAL FORCE OVERRIDES FOR LIVE PUBLIC VCARD === */
+#popup2,
+#popup2.popup {
+  background: rgba(10, 10, 10, 0.92) !important;
+  color: #fff !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  min-height: 0 !important;
+}
+
+#popup2 .card-inner,
+#popup2 .card-inner.card-scroll,
+#popup2 .card-scroll {
+  height: auto !important;
+  min-height: 0 !important;
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+  padding-bottom: 20px !important;
+}
+
+#popup2 .about-title,
+#popup2 .about-title *,
+.popup .about-title,
+.popup .about-title * {
+  background: var(--theme-color) !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+#popup2 .about-header,
+#popup2 .about-bio-box,
+#popup2 .hours-section,
+#popup2 .links-grid-4,
+#popup2 .social-grid,
+#popup2 .nav-row,
+#popup2 .popup-footer {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#popup2 .bio-text,
+#popup2 .link-btn,
+#popup2 .social-btn,
+#popup2 .hours-table td,
+#popup2 .hours-table th,
+#popup2 .store,
+#popup2 .location-time {
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+}
+
+.more-info-btn {
+  background: #000 !important;
+  border: 1px solid var(--theme-color) !important;
+  color: #fff !important;
+}
+
+.more-info-btn:hover,
+.more-info-btn:active {
+  background: #D1D5DB !important;
+  border-color: #D1D5DB !important;
+  color: #000 !important;
+}
+
