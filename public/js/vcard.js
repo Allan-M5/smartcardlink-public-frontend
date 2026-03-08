@@ -1,469 +1,706 @@
-// public/js/vcard.js - VCard Data Fetch and Logic
+
 (function () {
- 'use strict';
+    'use strict';
 
- // CRITICAL FIX: Use the explicit API root or window.location.origin for consistency
- // Using window.location.origin is generally best practice for connected frontends/backends
- const API_ROOT = "https://smartcardlink-api.onrender.com"; 
- const el = id => document.getElementById(id);
+    const API_ROOT = (function () {
+        const host = (window.location && window.location.hostname) || '';
+        const protocol = (window.location && window.location.protocol) || '';
+        if (protocol === 'file:' || host === 'localhost' || host === '127.0.0.1') {
+            return 'http://localhost:8080';
+        }
+        return 'https://smartcardlink-api.onrender.com';
+    })();
 
- // DOM References
- const vcardContainer = el('vcard'); // Assuming the main wrapper has this ID for full control
- const popup1 = el('popup1');
- const popup2 = el('popup2');
- const photoArea = el('photoArea');
+    const DEFAULT_THEME = '#FFD700';
 
- // Text Fields
- const fullName = el('fullName');
- const jobName = el('jobName');
- const titlePosition = el('titlePosition');
- const phoneMain = el('phoneMain');
- const emailMain = el('emailMain');
-
- // Lists
- const phoneList = el('phoneList');
- const emailList = el('emailList');
- const phoneDropdownBtn = el('phoneDropdownBtn');
- const emailDropdownBtn = el('emailDropdownBtn');
-
- // Action Buttons (Popup1)
- const actions = {
-  call: el('callBtn'),
-  sms: el('smsBtn'),
-  wa: el('waBtn'),
-  mail: el('mailBtn'),
-  print: el('printBtn'),
-  save: el('saveBtn')
- };
-
- // Popup2 Action Buttons
- const buttons = {
-  moreInfo: el('moreInfoBtn'),
-  back: el('backBtn'),
-  book: el('bookAppointmentBtn'),
-  business: el('businessWebsite'),
-  portfolio: el('portfolioWebsite'),
-  location: el('locationMap'),
-  physical: el('physicalAddress'),
-  facebook: el('facebookBtn'),
-  instagram: el('instagramBtn'),
-  x: el('xBtn'),
-  linkedin: el('linkedinBtn'),
-  tiktok: el('tiktokBtn'),
-  youtube: el('youtubeBtn')
- };
-
- // Popup2 Fields
- const bioText = el('bioText');
- const liveTime = el('liveTime');
- const hoursTable = document.querySelector('#hoursTable tbody');
-
- // --- UTILITY FUNCTIONS ---
- function setHidden(node, hidden) {
-  if (!node) return;
-
-  if (hidden) {
-    node.style.display = "none";
-    node.setAttribute("aria-hidden", "true");
-    node.setAttribute("hidden", "");
-  } else {
-    node.style.display = "block";
-    node.setAttribute("aria-hidden", "false");
-    node.removeAttribute("hidden");
-  }
-}
-
- function alertMsg(msg) {
-  if (typeof Swal !== 'undefined') {
-   Swal.fire({ title: msg, icon: 'info', confirmButtonColor: '#FFD700' });
-  } else {
-   alert(msg);
-  }
- }
- 
- /**
-  * Manages global messages (loading, success, error) at the top of the VCard.
-  */
- function showMessage(msg, isError = false) {
-  if (!vcardContainer) return;
-
-  // Hide main content popups
-  setHidden(popup1, true);
-  setHidden(popup2, true);
-
-  let msgEl = el('messageArea'); 
-  if (!msgEl) {
-    msgEl = document.createElement('div');
-    msgEl.id = 'messageArea';
-    msgEl.style.cssText = 'text-align: center; padding: 20px;';
-    vcardContainer.prepend(msgEl);
-  }
-  msgEl.style.color = isError ? '#ef4444' : '#FFD700';
-  msgEl.innerHTML = `<h3 style="margin: 0; padding: 0;">${msg}</h3>`;
-  setHidden(msgEl, false);
- }
-
- /**
- * Checks if a URL is non-empty and starts with http(s).
- * @param {string} url 
- * @returns {boolean}
- */
- function isValidUrl(url) {
-  if (!url || typeof url !== 'string' || url.trim() === '') {
-    return false;
-  }
-  const lowerUrl = url.toLowerCase();
-  return lowerUrl.startsWith('http://') || lowerUrl.startsWith('https://');
- }
- 
- /**
- * Handles opening a social media link with validation and logging.
- * @param {string} url 
- * @param {string} platform 
- */
- function openSocialLink(url, platform) {
-   if (isValidUrl(url)) {
-     window.open(url, '_blank');
-   } else {
-     alertMsg(`${platform} URL Not Provided or Invalid`);
-   }
- }
-
-function releaseFocus(container) {
-  if (!container) return;
-  const active = document.activeElement;
-  if (container.contains(active)) active.blur();
-}
-
-// --- DATA FETCHING ---
-async function fetchProfileData() {
-  try {
-    // FINAL FIX: Extract slug from Query Parameters (?slug=name) instead of Pathname
-    const urlParams = new URLSearchParams(window.location.search);
-    const clientSlug = urlParams.get('slug');
-    
-    if (!clientSlug) {
-        console.error("Missing vCard slug in URL parameters.");
-        throw new Error('VCard not found. Missing slug identifier.');
-    }
-   // Display loading state
-   showMessage(`
-    <span class="loading-spinner" style="
-      border: 3px solid #f3f3f3; border-top: 3px solid #FFD700; 
-      border-radius: 50%; width: 16px; height: 16px; 
-      animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; 
-      margin-right: 5px;"></span>
-    Loading VCard...
-   `);
-   
-   // CRITICAL FIX: Use the specific API slug endpoint
-   const res = await fetch(`${API_ROOT.replace(/\/$/, "")}/api/vcard/${clientSlug}`); 
-   
-   if (!res.ok) {
-     throw new Error('Network error or server unavailable.');
-   }
-   
-   const json = await res.json();
-   
-   if (json.status !== 'success' || !json.data) {
-     // Use the message from the API if provided
-     const msg = json.message || 'Card not found or currently inactive.';
-     throw new Error(msg); 
-   }
-   
-   // Hide message area on success
-   setHidden(el('messageArea'), true); 
-
-   return json.data || null; 
-   
-  } catch (err) {
-   console.error("Error fetching profile data:", err);
-   showMessage(err.message || 'Failed to load profile data.', true);
-   return null;
-  }
- }
-
- // --- RENDERING FUNCTIONS ---
-
- function renderPhoto(url) {
-  if (!photoArea) return;
-  photoArea.innerHTML = '';
-  const defaultPhoto = '/public/images/default-photo.png';
-  
-  if (url) {
-   const img = document.createElement('img');
-   img.src = url; 
-   img.alt = "Profile Photo";
-   // Fallback to a default image on error
-   img.onerror = () => { img.src = defaultPhoto; }; 
-   photoArea.appendChild(img);
-  } else {
-   photoArea.innerHTML = `<img src="${defaultPhoto}" alt="Default Profile Photo">`;
-  }
- }
-
- function buildList(container, items, type) {
-  if (!container) return;
-  container.innerHTML = '';
-  
-  const validItems = (items || []).filter(i => i && i.trim()); 
-  if (validItems.length === 0) {
-   const div = document.createElement('div');
-   div.className = 'list-item disabled';
-   div.textContent = 'No additional contacts';
-   container.appendChild(div);
-   return;
-  }
-
-  validItems.forEach(val => {
-   const div = document.createElement('div');
-   div.className = 'list-item';
-   div.textContent = val;
-   div.onclick = () => {
-    if (type === 'phone') window.location.href = `tel:${val.replace(/\s+/g,'')}`;
-    if (type === 'email') window.location.href = `mailto:${val}`;
-   };
-   container.appendChild(div);
-  });
- }
-
- function renderHours(hours) {
-  if (!hoursTable) return;
-  hoursTable.innerHTML = '';
-  
-  // Determine if the whole table should be hidden
-  const hasHours = hours && Object.values(hours).some(h => h && h.trim());
-  const hoursSection = el('hoursSection'); // Assuming there is a wrapper for the table
-  if (!hasHours) {
-   if (hoursSection) setHidden(hoursSection, true);
-   return;
-  }
-  if (hoursSection) setHidden(hoursSection, false);
-
-  const days = [
-   { label: 'MonFri', start: hours.monFriStart, end: hours.monFriEnd },
-   { label: 'Sat', start: hours.satStart, end: hours.satEnd },
-   { label: 'Sun', start: hours.sunStart, end: hours.sunEnd }
-  ];
-
-  days.forEach(d => {
-   const tr = document.createElement('tr');
-   // Display '-' if data is missing for start or end time
-   tr.innerHTML = `<td>${d.label}</td><td>${d.start || '-'}</td><td>${d.end || '-'}</td>`;
-   hoursTable.appendChild(tr);
-  });
- }
-
- // --- ACTION SETUP ---
-
- function setupPopup1Actions(client) {
-  const phone = client.phone1;
-  const email = client.email1;
-  const vcfDownloadUrl = client.vcardUrl; 
-
-  // Helper to disable/enable buttons based on data availability
-  const setAction = (btn, callback, condition) => {
-   if (!btn) return;
-   if (condition) {
-    btn.onclick = callback;
-    btn.classList.remove('disabled');
-   } else {
-    btn.onclick = () => alertMsg(btn.textContent + " is not provided");
-    btn.classList.add('disabled');
-   }
-  };
-
-  setAction(actions.call, () => window.location.href = `tel:${phone}`, phone);
-  setAction(actions.sms, () => window.location.href = `sms:${phone}`, phone);
-  setAction(actions.mail, () => window.location.href = `mailto:${email}`, email);
-
-  setAction(actions.wa, () => {
-   const digits = phone.replace(/\D/g, '');
-   window.open(`https://wa.me/${digits}`, '_blank');
-  }, phone);
-
-  setAction(actions.save, () => {
-  const vcard = [
-    "BEGIN:VCARD",
-    "VERSION:3.0",
-    `FN:${client.fullName || ""}`,
-    `N:${client.fullName || ""};;;;`,
-    client.phone1 ? `TEL;TYPE=CELL:${client.phone1}` : "",
-    client.email1 ? `EMAIL:${client.email1}` : "",
-    client.company ? `ORG:${client.company}` : "",
-    client.title ? `TITLE:${client.title}` : "",
-    "END:VCARD"
-  ].filter(Boolean).join("\n");
-
-  const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = (client.fullName || "contact").replace(/\s+/g,"_") + ".vcf";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}, true);
-
-  // Print button is always active
-  if(actions.print) actions.print.onclick = () => window.print();
- }
-
- function setupPopup2Buttons(client) {
-  const socialLinks = client.socialLinks || {};
-
-  // Helper for non-social URLs
-  const openOrAlert = (btn, url, fallback='URL Not Provided') => {
-   if (!btn) return;
-   if (url && url.trim()) {
-    btn.onclick = () => window.open(url, '_blank');
-    btn.classList.remove('disabled');
-   } else {
-    btn.onclick = () => alertMsg(fallback);
-    btn.classList.add('disabled');
-   }
-  };
-  
-  // Helper for social links
-  const setSocialAction = (btn, platformKey, platformName) => {
-   if (!btn) return;
-   const url = socialLinks[platformKey];
-   if (url && url.trim()) {
-    btn.onclick = () => openSocialLink(url, platformName);
-    btn.classList.remove('disabled');
-   } else {
-    btn.onclick = () => alertMsg(`${platformName} Not Provided`);
-    btn.classList.add('disabled');
-   }
-  };
-
-  // Website Links
-  openOrAlert(buttons.business, client.businessWebsite || client.website, 'Business Website Not Provided'); 
-  openOrAlert(buttons.portfolio, client.portfolioWebsite, 'Portfolio Website Not Provided');
-  openOrAlert(buttons.location, client.locationMap, 'Location Map Not Provided');
-  
-  // Physical Address (is just information, so alert text content)
-  if(buttons.physical) {
-   const address = client.address;
-   if(address) {
-    buttons.physical.onclick = () => alertMsg(address);
-    buttons.physical.classList.remove('disabled');
-   } else {
-    buttons.physical.onclick = () => alertMsg('Physical Address Not Provided');
-    buttons.physical.classList.add('disabled');
-   }
-  }
-
-  // Social Media Buttons
-  setSocialAction(buttons.facebook, 'facebook', 'Facebook');
-  setSocialAction(buttons.instagram, 'instagram', 'Instagram');
-  setSocialAction(buttons.x, 'twitter', 'X (Twitter)'); // Maps 'xBtn' to 'twitter' schema field
-  setSocialAction(buttons.linkedin, 'linkedin', 'LinkedIn');
-  setSocialAction(buttons.tiktok, 'tiktok', 'TikTok');
-  setSocialAction(buttons.youtube, 'youtube', 'YouTube');
-
-  // Book Appointment Logic (Assumes presence of an appointment link)
-  if (buttons.book) {
-   openOrAlert(buttons.book, client.appointmentLink, 'Appointment Link Not Provided');
-  }
- }
-
- // --- INITIALIZATION ---
- async function init() {
-  const client = await fetchProfileData();
-
-  if (client) {
-   // Populate Popup 1 Data
-   renderPhoto(client.photoUrl);
-   fullName.textContent = client.fullName || '';
-   jobName.textContent = client.company || '';
-   titlePosition.textContent = client.title || '';
-   
-   phoneMain.textContent = client.phone1 || 'Not Provided';
-   phoneMain.href = client.phone1 ? `tel:${client.phone1}` : '#';
-   
-   emailMain.textContent = client.email1 || 'Not Provided';
-   emailMain.href = client.email1 ? `mailto:${client.email1}` : '#';
-
-   // Additional Contacts
-   // Filter out falsy values like null/undefined/empty string from phone2/3, email2/3
-   buildList(phoneList, [client.phone2, client.phone3].filter(Boolean), 'phone');
-   buildList(emailList, [client.email2, client.email3].filter(Boolean), 'email');
-
-   // Populate Popup 2 Data
-   bioText.textContent = client.bio || 'No bio provided.';
-   renderHours(client.workingHours);
-   
-   // Setup all buttons
-   setupPopup1Actions(client);
-   setupPopup2Buttons(client);
-
-   // Show the main VCard popup
-   setHidden(popup1, false);
-   setHidden(popup2, true);
-  }
-
-  // Dropdown Toggles (Kept intact)
-  [ [phoneDropdownBtn, phoneList], [emailDropdownBtn, emailList] ].forEach(([btn, list]) => {
-   if(!btn || !list) return;
-   setHidden(list, true);
-   btn.onclick = () => {
-    const isHidden = list.style.display === 'none';
-    setHidden(list, !isHidden);
-    const icon = btn.querySelector('i');
-    if (icon) icon.className = isHidden ? 'fa fa-chevron-up' : 'fa fa-chevron-down';
-   };
-  });
-
-  // Popup Navigation & Sizing Logic (Kept intact)
-  if (buttons.moreInfo && popup1 && popup2) {
-   buttons.moreInfo.onclick = () => {
-  // FORCE popup toggle – override index.html interference
-  popup1.hidden = true;
-  popup2.hidden = false;
-
-  popup1.style.display = "none";
-  popup2.style.display = "block";
-
-  popup2.scrollTop = 0;
-};
-  }
-  
-  if (buttons.back) {
-   buttons.back.onclick = () => {
-  releaseFocus(popup2);
-
-  setHidden(popup2, true);
-  setHidden(popup1, false);
-
-  if (buttons.moreInfo) buttons.moreInfo.focus();
-};
-  }
-
-  // Live Time Update (Kept intact)
-  if (liveTime) {
-   setInterval(() => {
-    const options = { 
-     day: 'numeric', month: 'short', year: 'numeric', 
-     hour: '2-digit', minute: '2-digit', second: '2-digit', 
-     hour12: false, timeZone: 'Africa/Nairobi' 
+    const el = function (id) {
+        return document.getElementById(id);
     };
-    const dateStr = new Date().toLocaleString('en-GB', options);
-    liveTime.textContent = dateStr.replace(',', ' ');
-   }, 1000);
-  }
- }
 
- document.addEventListener('DOMContentLoaded', init);
+    const state = {
+        client: null,
+        showQr: false,
+        longPressTimer: null,
+        overlay: null
+    };
 
+    const vcardContainer = el('vcard');
+    const popup1 = el('popup1');
+    const popup2 = el('popup2');
+    const photoArea = el('photoArea');
+    const fullName = el('fullName');
+    const jobName = el('jobName');
+    const titlePosition = el('titlePosition');
+    const phoneMain = el('phoneMain');
+    const emailMain = el('emailMain');
+    const phoneList = el('phoneList');
+    const emailList = el('emailList');
+    const phoneDropdownBtn = el('phoneDropdownBtn');
+    const emailDropdownBtn = el('emailDropdownBtn');
+    const bioText = el('bioText');
+    const liveTime = el('liveTime');
+    const hoursTableBody = document.querySelector('#hoursTable tbody');
+
+    const actions = {
+        call: el('callBtn'),
+        sms: el('smsBtn'),
+        wa: el('waBtn'),
+        mail: el('mailBtn'),
+        print: el('printBtn'),
+        save: el('saveBtn')
+    };
+
+    const buttons = {
+        moreInfo: el('moreInfoBtn'),
+        back: el('backBtn'),
+        book: el('bookAppointmentBtn'),
+        business: el('businessWebsite'),
+        portfolio: el('portfolioWebsite'),
+        location: el('locationMap'),
+        physical: el('physicalAddress'),
+        facebook: el('facebookBtn'),
+        instagram: el('instagramBtn'),
+        x: el('xBtn'),
+        linkedin: el('linkedinBtn'),
+        tiktok: el('tiktokBtn'),
+        youtube: el('youtubeBtn')
+    };
+
+    function normalizeColor(value) {
+        const color = String(value || '').trim();
+        return /^#[0-9A-Fa-f]{6}$/.test(color) ? color.toUpperCase() : DEFAULT_THEME;
+    }
+
+    function setHidden(node, hidden) {
+        if (!node) return;
+        if (hidden) {
+            node.setAttribute('hidden', '');
+            node.setAttribute('aria-hidden', 'true');
+        } else {
+            node.removeAttribute('hidden');
+            node.setAttribute('aria-hidden', 'false');
+        }
+    }
+
+    function setText(node, value, fallback) {
+        if (!node) return;
+        node.textContent = String(value || fallback || '');
+    }
+
+    function escapeHtml(value) {
+        return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function showMessage(message, isError) {
+        if (!vcardContainer) return;
+        setHidden(popup1, true);
+        setHidden(popup2, true);
+
+        let box = el('messageArea');
+        if (!box) {
+            box = document.createElement('div');
+            box.id = 'messageArea';
+            box.style.padding = '28px 18px';
+            box.style.textAlign = 'center';
+            box.style.fontFamily = 'Inter, sans-serif';
+            box.style.fontWeight = '700';
+            box.style.letterSpacing = '0.2px';
+            vcardContainer.prepend(box);
+        }
+
+        box.style.color = isError ? '#ef4444' : 'var(--theme-color, #FFD700)';
+        box.innerHTML = '<h3 style="font-size:18px;">' + escapeHtml(message) + '</h3>';
+        setHidden(box, false);
+    }
+
+    function hideMessage() {
+        const box = el('messageArea');
+        if (box) {
+            setHidden(box, true);
+        }
+    }
+
+    function applyTheme(color) {
+        const theme = normalizeColor(color);
+        document.documentElement.style.setProperty('--theme-color', theme);
+
+        let styleTag = el('smartcard-theme-override');
+        if (!styleTag) {
+            styleTag = document.createElement('style');
+            styleTag.id = 'smartcard-theme-override';
+            document.head.appendChild(styleTag);
+        }
+
+        styleTag.textContent =
+            '.full-name, .job-name, .title-position, .contact-primary, .about-title, .bio-label, .contact-label, .dropdown-btn i {' +
+                'color: ' + theme + ' !important;' +
+            '}' +
+            '.vcard::before {' +
+                'box-shadow: 0 0 15px 2px ' + theme + ', 0 0 30px 5px ' + theme + ' !important;' +
+            '}' +
+            '.vcard::after {' +
+                'border-color: ' + theme + ' !important; box-shadow: inset 0 0 15px ' + theme + ' !important;' +
+            '}' +
+            '.about-header, .about-bio-box {' +
+                'background: ' + theme + ' !important; color: #ffffff !important;' +
+            '}' +
+            '.about-header .about-title, .about-header .bio-label, .about-header .bio-text {' +
+                'color: #ffffff !important;' +
+            '}' +
+            '#hoursTable thead tr, #hoursTable thead th {' +
+                'background: ' + theme + ' !important; color: #ffffff !important;' +
+            '}' +
+            '.action-btn, .more-info-btn, .back-btn, .book-btn, .link-btn, .social-btn {' +
+                'border-color: ' + theme + ' !important;' +
+            '}' +
+            '.photo-area {' +
+                'border-bottom-color: ' + theme + ' !important;' +
+            '}' +
+            '.swipe-hint, .qr-panel-label {' +
+                'background: rgba(0,0,0,0.62); color: ' + theme + ' !important; border: 1px solid ' + theme + ' !important;' +
+            '}';
+    }
+
+    function getSlug() {
+        const params = new URLSearchParams(window.location.search);
+        const querySlug = params.get('slug');
+        if (querySlug) return querySlug;
+
+        const path = String(window.location.pathname || '').split('/').filter(Boolean);
+        const last = path[path.length - 1] || '';
+        if (last && !/\.html?$/i.test(last)) {
+            return last;
+        }
+        return '';
+    }
+
+    async function fetchProfileData() {
+        const slug = getSlug();
+        if (!slug) {
+            showMessage('VCard Identifier not found.', true);
+            return null;
+        }
+
+        try {
+            showMessage('Loading professional vCard...', false);
+
+            const response = await fetch(API_ROOT + '/api/vcard/' + encodeURIComponent(slug), {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            const json = await response.json().catch(function () {
+                return {};
+            });
+
+            if (!response.ok || !json || json.status !== 'success' || !json.data) {
+                throw new Error((json && json.message) || 'Card not found.');
+            }
+
+            hideMessage();
+            return json.data;
+        } catch (error) {
+            showMessage(error.message || 'Failed to load card.', true);
+            return null;
+        }
+    }
+
+    function buildList(container, items, formatter) {
+        if (!container) return;
+        container.innerHTML = '';
+        const usable = (items || []).filter(Boolean);
+        if (!usable.length) {
+            container.hidden = true;
+            return;
+        }
+
+        usable.forEach(function (item) {
+            const row = document.createElement('button');
+            row.type = 'button';
+            row.className = 'dropdown-item';
+            row.textContent = formatter.label(item);
+            row.addEventListener('click', formatter.action(item));
+            container.appendChild(row);
+        });
+    }
+
+    function setupDropdown(button, container) {
+        if (!button || !container) return;
+        button.addEventListener('click', function () {
+            const willOpen = container.hidden;
+            container.hidden = !willOpen;
+            button.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        });
+    }
+
+    function wireLinkButton(button, url, emptyMessage) {
+        if (!button) return;
+        const clean = String(url || '').trim();
+
+        if (!clean) {
+            button.disabled = true;
+            button.classList.add('disabled');
+            button.onclick = function () {
+                alert(emptyMessage || 'Not provided');
+            };
+            return;
+        }
+
+        button.disabled = false;
+        button.classList.remove('disabled');
+        button.onclick = function () {
+            window.open(clean, '_blank', 'noopener,noreferrer');
+        };
+    }
+
+    function alert(message) {
+        if (typeof window.Swal !== 'undefined') {
+            window.Swal.fire({
+                title: message,
+                icon: 'info',
+                confirmButtonColor: normalizeColor(state.client && state.client.themeColor)
+            });
+            return;
+        }
+        window.alert(message);
+    }
+
+    function sanitizePhone(phone) {
+        return String(phone || '').replace(/[^\d+]/g, '');
+    }
+
+    function setupActions(client) {
+        const phone = client.phone1 || '';
+        const email = client.email1 || '';
+        const whatsappPhone = sanitizePhone(phone).replace(/^\+/, '');
+
+        if (actions.call) {
+            actions.call.onclick = phone ? function () {
+                window.location.href = 'tel:' + phone;
+            } : function () {
+                alert('Phone number not provided');
+            };
+            actions.call.classList.toggle('disabled', !phone);
+        }
+
+        if (actions.sms) {
+            actions.sms.onclick = phone ? function () {
+                window.location.href = 'sms:' + phone;
+            } : function () {
+                alert('Phone number not provided');
+            };
+            actions.sms.classList.toggle('disabled', !phone);
+        }
+
+        if (actions.wa) {
+            actions.wa.onclick = phone ? function () {
+                window.open('https://wa.me/' + whatsappPhone, '_blank', 'noopener,noreferrer');
+            } : function () {
+                alert('WhatsApp number not provided');
+            };
+            actions.wa.classList.toggle('disabled', !phone);
+        }
+
+        if (actions.mail) {
+            actions.mail.onclick = email ? function () {
+                window.location.href = 'mailto:' + email;
+            } : function () {
+                alert('Email not provided');
+            };
+            actions.mail.classList.toggle('disabled', !email);
+        }
+
+        if (actions.print) {
+            actions.print.onclick = function () {
+                window.print();
+            };
+        }
+
+        if (actions.save) {
+            actions.save.onclick = function () {
+                const assetUrl = client.vcardAssetUrl || client.vcardFileUrl || client.vcfUrl || '';
+                if (!assetUrl) {
+                    alert('Contact file is not available yet.');
+                    return;
+                }
+
+                const anchor = document.createElement('a');
+                anchor.href = assetUrl;
+                anchor.target = '_blank';
+                anchor.rel = 'noopener noreferrer';
+                anchor.download = (client.slug || client.fullName || 'smartcardlink-contact') + '.vcf';
+                document.body.appendChild(anchor);
+                anchor.click();
+                document.body.removeChild(anchor);
+            };
+        }
+    }
+
+    function renderHours(hours) {
+        if (!hoursTableBody) return;
+        hoursTableBody.innerHTML = '';
+
+        const rows = [
+            { day: 'Mon-Fri', start: hours && hours.monFriStart, end: hours && hours.monFriEnd },
+            { day: 'Saturday', start: hours && hours.satStart, end: hours && hours.satEnd },
+            { day: 'Sunday', start: hours && hours.sunStart, end: hours && hours.sunEnd }
+        ];
+
+        rows.forEach(function (rowData) {
+            const row = document.createElement('tr');
+
+            const day = document.createElement('td');
+            day.textContent = rowData.day;
+
+            const start = document.createElement('td');
+            start.textContent = rowData.start || '--';
+
+            const end = document.createElement('td');
+            end.textContent = rowData.end || '--';
+
+            row.appendChild(day);
+            row.appendChild(start);
+            row.appendChild(end);
+            hoursTableBody.appendChild(row);
+        });
+    }
+
+    function updateLiveTime() {
+        if (!liveTime) return;
+        const now = new Date();
+        liveTime.textContent = now.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function createFullscreenOverlay(src) {
+        if (!src) return;
+
+        if (!state.overlay) {
+            const overlay = document.createElement('div');
+            overlay.id = 'photoFullscreenOverlay';
+            overlay.style.position = 'fixed';
+            overlay.style.inset = '0';
+            overlay.style.background = 'rgba(0, 0, 0, 0.92)';
+            overlay.style.display = 'flex';
+            overlay.style.alignItems = 'center';
+            overlay.style.justifyContent = 'center';
+            overlay.style.padding = '18px';
+            overlay.style.zIndex = '9999';
+            overlay.style.cursor = 'zoom-out';
+            overlay.hidden = true;
+
+            const img = document.createElement('img');
+            img.id = 'photoFullscreenImage';
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '100%';
+            img.style.objectFit = 'contain';
+            img.style.borderRadius = '12px';
+            img.style.boxShadow = '0 0 25px rgba(255,255,255,0.12)';
+            overlay.appendChild(img);
+
+            overlay.addEventListener('click', function () {
+                overlay.hidden = true;
+            });
+
+            document.body.appendChild(overlay);
+            state.overlay = overlay;
+        }
+
+        const image = state.overlay.querySelector('#photoFullscreenImage');
+        image.src = src;
+        state.overlay.hidden = false;
+    }
+
+    function renderPhotoAndQr(client) {
+        if (!photoArea) return;
+
+        photoArea.innerHTML = '';
+
+        const shell = document.createElement('div');
+        shell.className = 'photo-swipe-shell';
+        shell.style.width = '100%';
+        shell.style.height = '100%';
+        shell.style.position = 'relative';
+        shell.style.overflow = 'hidden';
+
+        const track = document.createElement('div');
+        track.className = 'photo-swipe-track';
+        track.style.width = '200%';
+        track.style.height = '100%';
+        track.style.display = 'flex';
+        track.style.transition = 'transform 0.35s ease';
+        track.style.transform = state.showQr ? 'translateX(-50%)' : 'translateX(0)';
+
+        const photoPane = document.createElement('div');
+        photoPane.className = 'photo-panel';
+        photoPane.style.width = '50%';
+        photoPane.style.height = '100%';
+        photoPane.style.position = 'relative';
+        photoPane.style.background = '#000';
+        photoPane.style.display = 'flex';
+        photoPane.style.alignItems = 'center';
+        photoPane.style.justifyContent = 'center';
+
+        const qrPane = document.createElement('div');
+        qrPane.className = 'qr-panel';
+        qrPane.style.width = '50%';
+        qrPane.style.height = '100%';
+        qrPane.style.position = 'relative';
+        qrPane.style.background = '#050505';
+        qrPane.style.display = 'flex';
+        qrPane.style.alignItems = 'center';
+        qrPane.style.justifyContent = 'center';
+
+        const hint = document.createElement('div');
+        hint.className = 'swipe-hint';
+        hint.textContent = 'Swipe or tap photo to reveal QR';
+        hint.style.position = 'absolute';
+        hint.style.left = '12px';
+        hint.style.bottom = '12px';
+        hint.style.padding = '6px 10px';
+        hint.style.borderRadius = '999px';
+        hint.style.fontSize = '12px';
+        hint.style.fontWeight = '700';
+        photoPane.appendChild(hint);
+
+        if (client.photoUrl) {
+            const img = document.createElement('img');
+            img.src = client.photoUrl;
+            img.alt = client.fullName || 'Profile Photo';
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'cover';
+            img.draggable = false;
+
+            let pointerStart = 0;
+            let moved = false;
+
+            const startPress = function (pageX) {
+                pointerStart = pageX || 0;
+                moved = false;
+                clearTimeout(state.longPressTimer);
+                state.longPressTimer = window.setTimeout(function () {
+                    createFullscreenOverlay(client.photoUrl);
+                }, 450);
+            };
+
+            const movePress = function (pageX) {
+                if (Math.abs((pageX || 0) - pointerStart) > 10) {
+                    moved = true;
+                    clearTimeout(state.longPressTimer);
+                }
+            };
+
+            const endPress = function (pageX) {
+                clearTimeout(state.longPressTimer);
+                const delta = (pageX || 0) - pointerStart;
+                if (Math.abs(delta) > 50) {
+                    state.showQr = delta < 0;
+                    track.style.transform = state.showQr ? 'translateX(-50%)' : 'translateX(0)';
+                    return;
+                }
+                if (!moved) {
+                    state.showQr = !state.showQr;
+                    track.style.transform = state.showQr ? 'translateX(-50%)' : 'translateX(0)';
+                }
+            };
+
+            img.addEventListener('mousedown', function (event) {
+                startPress(event.pageX);
+            });
+            img.addEventListener('mousemove', function (event) {
+                movePress(event.pageX);
+            });
+            img.addEventListener('mouseup', function (event) {
+                endPress(event.pageX);
+            });
+            img.addEventListener('mouseleave', function () {
+                clearTimeout(state.longPressTimer);
+            });
+            img.addEventListener('touchstart', function (event) {
+                startPress(event.touches[0].clientX);
+            }, { passive: true });
+            img.addEventListener('touchmove', function (event) {
+                movePress(event.touches[0].clientX);
+            }, { passive: true });
+            img.addEventListener('touchend', function (event) {
+                const changed = event.changedTouches[0];
+                endPress(changed ? changed.clientX : 0);
+            });
+
+            photoPane.appendChild(img);
+        } else {
+            const empty = document.createElement('div');
+            empty.className = 'not-provided';
+            empty.textContent = 'Photo not provided';
+            photoPane.appendChild(empty);
+        }
+
+        const qrLabel = document.createElement('div');
+        qrLabel.className = 'qr-panel-label';
+        qrLabel.textContent = 'Tap or swipe back to photo';
+        qrLabel.style.position = 'absolute';
+        qrLabel.style.left = '12px';
+        qrLabel.style.bottom = '12px';
+        qrLabel.style.padding = '6px 10px';
+        qrLabel.style.borderRadius = '999px';
+        qrLabel.style.fontSize = '12px';
+        qrLabel.style.fontWeight = '700';
+        qrPane.appendChild(qrLabel);
+
+        if (client.qrCodeUrl) {
+            const qr = document.createElement('img');
+            qr.src = client.qrCodeUrl;
+            qr.alt = 'QR Code';
+            qr.style.width = '78%';
+            qr.style.maxWidth = '220px';
+            qr.style.height = 'auto';
+            qr.style.objectFit = 'contain';
+            qr.draggable = false;
+            qrPane.appendChild(qr);
+        } else {
+            const qrEmpty = document.createElement('div');
+            qrEmpty.className = 'not-provided';
+            qrEmpty.textContent = 'QR will appear after activation';
+            qrPane.appendChild(qrEmpty);
+        }
+
+        qrPane.addEventListener('click', function () {
+            state.showQr = false;
+            track.style.transform = 'translateX(0)';
+        });
+
+        track.appendChild(photoPane);
+        track.appendChild(qrPane);
+        shell.appendChild(track);
+        photoArea.appendChild(shell);
+    }
+
+    function setupInfoButtons(client) {
+        wireLinkButton(buttons.business, client.businessWebsite, 'Business website not provided');
+        wireLinkButton(buttons.portfolio, client.portfolioWebsite, 'Portfolio website not provided');
+        wireLinkButton(buttons.location, client.locationMap, 'Location map not provided');
+
+        if (buttons.physical) {
+            const address = String(client.address || '').trim();
+            buttons.physical.disabled = !address;
+            buttons.physical.classList.toggle('disabled', !address);
+            buttons.physical.onclick = address ? function () {
+                alert(address);
+            } : function () {
+                alert('Physical address not provided');
+            };
+        }
+
+        wireLinkButton(buttons.facebook, client.socialLinks && client.socialLinks.facebook, 'Facebook not provided');
+        wireLinkButton(buttons.instagram, client.socialLinks && client.socialLinks.instagram, 'Instagram not provided');
+        wireLinkButton(buttons.x, client.socialLinks && client.socialLinks.twitter, 'X not provided');
+        wireLinkButton(buttons.linkedin, client.socialLinks && client.socialLinks.linkedin, 'LinkedIn not provided');
+        wireLinkButton(buttons.tiktok, client.socialLinks && client.socialLinks.tiktok, 'TikTok not provided');
+        wireLinkButton(buttons.youtube, client.socialLinks && client.socialLinks.youtube, 'YouTube not provided');
+
+        if (buttons.book) {
+            const bookingLink = client.bookingLink || client.appointmentUrl || '';
+            buttons.book.disabled = !bookingLink;
+            buttons.book.classList.toggle('disabled', !bookingLink);
+            buttons.book.onclick = bookingLink ? function () {
+                window.open(bookingLink, '_blank', 'noopener,noreferrer');
+            } : function () {
+                alert('Booking link not available');
+            };
+        }
+    }
+
+    function renderClient(client) {
+        state.client = client;
+
+        applyTheme(client.themeColor);
+        renderPhotoAndQr(client);
+
+        setText(fullName, client.fullName, '');
+        setText(jobName, client.company, '');
+        setText(titlePosition, client.title, '');
+        setText(phoneMain, client.phone1, 'Not Provided');
+        setText(emailMain, client.email1, 'Not Provided');
+        setText(bioText, client.bio, 'Professional profile coming soon.');
+
+        const phones = [client.phone1, client.phone2, client.phone3].filter(Boolean);
+        const emails = [client.email1, client.email2, client.email3].filter(Boolean);
+
+        buildList(phoneList, phones.slice(1), {
+            label: function (value) {
+                return value;
+            },
+            action: function (value) {
+                return function () {
+                    window.location.href = 'tel:' + value;
+                };
+            }
+        });
+
+        buildList(emailList, emails.slice(1), {
+            label: function (value) {
+                return value;
+            },
+            action: function (value) {
+                return function () {
+                    window.location.href = 'mailto:' + value;
+                };
+            }
+        });
+
+        if (phoneDropdownBtn) {
+            phoneDropdownBtn.style.display = phones.length > 1 ? 'inline-flex' : 'none';
+        }
+        if (emailDropdownBtn) {
+            emailDropdownBtn.style.display = emails.length > 1 ? 'inline-flex' : 'none';
+        }
+
+        renderHours(client.workingHours || {});
+        setupActions(client);
+        setupInfoButtons(client);
+        updateLiveTime();
+        window.setInterval(updateLiveTime, 30000);
+
+        setHidden(popup1, false);
+        setHidden(popup2, true);
+        hideMessage();
+    }
+
+    function setupNavigation() {
+        if (buttons.moreInfo) {
+            buttons.moreInfo.addEventListener('click', function () {
+                setHidden(popup1, true);
+                setHidden(popup2, false);
+            });
+        }
+
+        if (buttons.back) {
+            buttons.back.addEventListener('click', function () {
+                setHidden(popup2, true);
+                setHidden(popup1, false);
+            });
+        }
+
+        setupDropdown(phoneDropdownBtn, phoneList);
+        setupDropdown(emailDropdownBtn, emailList);
+    }
+
+    async function init() {
+        setupNavigation();
+        const client = await fetchProfileData();
+        if (!client) return;
+        renderClient(client);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
 })();
-
-
-
-
-
-
-
-
