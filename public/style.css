@@ -846,115 +846,35 @@ body {
   object-fit: contain;
 }
 
-.swipe-hint{
- position:absolute;
- bottom:10px;
- left:50%;
- transform:translateX(-50%);
- color:#fff;
- font-size:12px;
- opacity:0;
- animation:hintLoop 6s infinite;
-}
 
-@keyframes hintLoop{
- 0%{opacity:0}
- 20%{opacity:1}
- 60%{opacity:1}
- 80%{opacity:0}
- 100%{opacity:0}
-}
-
-
-.job-name{
- color:#fff !important;
-}
-
-
-.popup{
-  background: rgba(10, 10, 10, 0.92);
-  color:#fff;
-}
-
-
-.bio-label{
- color:var(--theme-color);
-}
-
-.about-bio-box{
- background:#000;
- border:1px solid var(--theme-color);
-}
-
-.bio-text{
- color:#fff;
-}
-
-
-.more-info-btn{
- background:#000;
- border-color:#000;
- color:#fff;
-}
-
-.more-info-btn:hover{
-  background:#D1D5DB;
-  border-color:#D1D5DB;
-  color:#000;
-}
-
-
-/* === SmartCardLink public vCard targeted overrides === */
+/* === FINAL CLEAN PUBLIC VCARD OVERRIDES === */
 .vcard::before {
   box-shadow: 0 0 22px 4px var(--theme-color), 0 0 40px 8px var(--theme-color) !important;
   opacity: 0.62 !important;
+  animation: theme-heartbeat 3s ease-in-out infinite !important;
 }
 
 @keyframes theme-heartbeat {
   0% {
-    box-shadow: 0 0 28px 6px var(--theme-color), 0 0 48px 10px var(--theme-color);
+    box-shadow: 0 0 22px 4px var(--theme-color), 0 0 40px 8px var(--theme-color);
     transform: scale(1);
-    opacity: 0.56;
+    opacity: 0.52;
   }
   35% {
-    box-shadow: 0 0 34px 10px var(--theme-color), 0 0 56px 14px var(--theme-color);
-    transform: scale(1.010);
-    opacity: 0.82;
+    box-shadow: 0 0 30px 8px var(--theme-color), 0 0 48px 12px var(--theme-color);
+    transform: scale(1.008);
+    opacity: 0.76;
   }
   55% {
-    box-shadow: 0 0 42px 14px var(--theme-color), 0 0 64px 18px var(--theme-color);
-    transform: scale(1.014);
-    opacity: 0.96;
-  }
-  100% {
-    box-shadow: 0 0 28px 6px var(--theme-color), 0 0 48px 10px var(--theme-color);
-    transform: scale(1);
-    opacity: 0.56;
-  }
-}
-  50% {
-    box-shadow: 0 0 35px 10px var(--theme-color), 0 0 52px 14px var(--theme-color);
-    transform: scale(1.006);
-    opacity: 0.82;
+    box-shadow: 0 0 36px 12px var(--theme-color), 0 0 56px 16px var(--theme-color);
+    transform: scale(1.012);
+    opacity: 0.9;
   }
   100% {
     box-shadow: 0 0 22px 4px var(--theme-color), 0 0 40px 8px var(--theme-color);
     transform: scale(1);
-    opacity: 0.48;
+    opacity: 0.52;
   }
-}
-
-.full-name,
-.title-position,
-.contact-label,
-.dropdown-btn,
-.link-btn,
-.hours-table th,
-.bio-label,
-.store,
-.action-btn i,
-.social-btn i {
-  color: var(--theme-color);
 }
 
 .job-name {
@@ -963,9 +883,8 @@ body {
 
 .more-info-btn {
   background: #000 !important;
-  color: #fff !important;
   border: 1px solid var(--theme-color) !important;
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset;
+  color: #fff !important;
 }
 
 .more-info-btn:hover,
@@ -975,27 +894,87 @@ body {
   color: #000 !important;
 }
 
-.popup {
+#popup2[hidden] {
+  display: none !important;
+}
+
+#popup2:not([hidden]),
+#popup2.popup:not([hidden]) {
   background: rgba(10, 10, 10, 0.92) !important;
   color: #fff !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  min-height: 0 !important;
 }
 
-.about-title {
+#popup2 .card-inner,
+#popup2 .card-inner.card-scroll,
+#popup2 .card-scroll {
+  height: auto !important;
+  min-height: 0 !important;
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+  padding-bottom: 20px !important;
+}
+
+#popup2 .about-title,
+#popup2 .about-title *,
+.popup .about-title,
+.popup .about-title * {
   background: var(--theme-color) !important;
   color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  text-shadow: none !important;
+  filter: none !important;
 }
 
-.about-bio-box {
+#popup2 .about-bio-box {
   background: #000 !important;
   border: 1px solid var(--theme-color) !important;
 }
 
-.bio-label {
+#popup2 .bio-label {
   color: var(--theme-color) !important;
 }
 
-.bio-text {
+#popup2 .bio-text {
   color: #fff !important;
+}
+
+#popup2 .hours-table th {
+  background: var(--theme-color) !important;
+  color: #000 !important;
+}
+
+#popup2 .about-header,
+#popup2 .about-bio-box,
+#popup2 .hours-section,
+#popup2 .links-grid-4,
+#popup2 .social-grid,
+#popup2 .nav-row,
+#popup2 .popup-footer {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#popup2 .bio-text,
+#popup2 .link-btn,
+#popup2 .social-btn,
+#popup2 .hours-table td,
+#popup2 .hours-table th,
+#popup2 .store,
+#popup2 .location-time {
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+}
+
+#popup2 .popup-footer {
+  flex-shrink: 0 !important;
+  margin-top: 0 !important;
 }
 
 .card-scroll {
@@ -1005,47 +984,6 @@ body {
 .card-scroll::-webkit-scrollbar-thumb {
   background: var(--theme-color) !important;
   border-radius: 999px;
-}
-
-.photo-swipe-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  touch-action: pan-y;
-}
-
-.photo-swipe-track {
-  display: flex;
-  width: 200%;
-  height: 100%;
-  transition: transform 0.35s ease;
-  will-change: transform;
-}
-
-.photo-panel,
-.qr-panel {
-  width: 50%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  position: relative;
-  background: #000;
-}
-
-.photo-panel img,
-.qr-panel img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.qr-panel img {
-  object-fit: contain;
-  padding: 14px;
-  background: #000;
 }
 
 .swipe-hint {
@@ -1085,153 +1023,3 @@ body {
   max-height: 96vh;
   object-fit: contain;
 }
-
-.link-btn,
-.social-btn,
-.book-btn,
-.back-btn,
-.action-btn {
-  outline: none;
-}
-
-.link-btn.disabled,
-.social-btn.disabled,
-.book-btn.disabled,
-.action-btn.disabled {
-  opacity: 0.72;
-}
-
-.list-item.disabled em {
-  color: #d5d5d5;
-  font-style: italic;
-}
-
-.vcard::before {
-  box-shadow: 0 0 28px 6px var(--theme-color), 0 0 48px 10px var(--theme-color) !important;
-  opacity: 0.72 !important;
-}
-
-@keyframes theme-heartbeat {
-  0% {
-    box-shadow: 0 0 28px 6px var(--theme-color), 0 0 48px 10px var(--theme-color);
-    transform: scale(1);
-    opacity: 0.56;
-  }
-  35% {
-    box-shadow: 0 0 34px 10px var(--theme-color), 0 0 56px 14px var(--theme-color);
-    transform: scale(1.010);
-    opacity: 0.82;
-  }
-  55% {
-    box-shadow: 0 0 42px 14px var(--theme-color), 0 0 64px 18px var(--theme-color);
-    transform: scale(1.014);
-    opacity: 0.96;
-  }
-  100% {
-    box-shadow: 0 0 28px 6px var(--theme-color), 0 0 48px 10px var(--theme-color);
-    transform: scale(1);
-    opacity: 0.56;
-  }
-}
-  50% {
-    box-shadow: 0 0 40px 12px var(--theme-color), 0 0 60px 16px var(--theme-color);
-    transform: scale(1.007);
-    opacity: 0.9;
-  }
-  100% {
-    box-shadow: 0 0 28px 6px var(--theme-color), 0 0 48px 10px var(--theme-color);
-    transform: scale(1);
-    opacity: 0.56;
-  }
-}
-
-
-.hours-table th {
-  color: #000 !important;
-}
-
-
-.about-title {
-  color: #000 !important;
-}
-
-
-.about-title,
-.about-title *,
-#popup2 .about-title,
-#popup2 .about-title * {
-  color: #000 !important;
-  -webkit-text-fill-color: #000 !important;
-}
-
-
-/* === FINAL FORCE OVERRIDES FOR LIVE PUBLIC VCARD === */
-#popup2,
-#popup2.popup {
-  background: rgba(10, 10, 10, 0.92) !important;
-  color: #fff !important;
-  display: flex !important;
-  flex-direction: column !important;
-  overflow: hidden !important;
-  min-height: 0 !important;
-}
-
-#popup2 .card-inner,
-#popup2 .card-inner.card-scroll,
-#popup2 .card-scroll {
-  height: auto !important;
-  min-height: 0 !important;
-  flex: 1 1 auto !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  box-sizing: border-box !important;
-  padding-bottom: 20px !important;
-}
-
-#popup2 .about-title,
-#popup2 .about-title *,
-.popup .about-title,
-.popup .about-title * {
-  background: var(--theme-color) !important;
-  color: #000 !important;
-  -webkit-text-fill-color: #000 !important;
-  text-shadow: none !important;
-  filter: none !important;
-}
-
-#popup2 .about-header,
-#popup2 .about-bio-box,
-#popup2 .hours-section,
-#popup2 .links-grid-4,
-#popup2 .social-grid,
-#popup2 .nav-row,
-#popup2 .popup-footer {
-  width: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-#popup2 .bio-text,
-#popup2 .link-btn,
-#popup2 .social-btn,
-#popup2 .hours-table td,
-#popup2 .hours-table th,
-#popup2 .store,
-#popup2 .location-time {
-  word-break: break-word !important;
-  overflow-wrap: anywhere !important;
-}
-
-.more-info-btn {
-  background: #000 !important;
-  border: 1px solid var(--theme-color) !important;
-  color: #fff !important;
-}
-
-.more-info-btn:hover,
-.more-info-btn:active {
-  background: #D1D5DB !important;
-  border-color: #D1D5DB !important;
-  color: #000 !important;
-}
-
