@@ -855,8 +855,8 @@ body {
 
 
 .popup{
- background:var(--theme-color);
- color:#fff;
+  background: rgba(10, 10, 10, 0.92);
+  color:#fff;
 }
 
 
@@ -881,8 +881,8 @@ body {
 }
 
 .more-info-btn:hover{
- background:#D1D5DB;
- border-color:#D1D5DB;
- color:#fff;
+  background:#D1D5DB;
+  border-color:#D1D5DB;
+  color:#000;
 }
 
