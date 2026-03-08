@@ -1023,3 +1023,65 @@ body {
   max-height: 96vh;
   object-fit: contain;
 }
+
+/* === FINAL QR FIT FIX === */
+.photo-area {
+  overflow: hidden !important;
+}
+
+.photo-swipe-container {
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+.photo-swipe-track {
+  display: flex !important;
+  width: 200% !important;
+  height: 100% !important;
+  transition: transform 0.35s ease !important;
+}
+
+.photo-panel,
+.qr-panel {
+  width: 50% !important;
+  height: 100% !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  background: #000 !important;
+}
+
+.photo-panel img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  max-width: none !important;
+  max-height: none !important;
+  border-radius: 0 !important;
+}
+
+.qr-panel img {
+  width: auto !important;
+  height: auto !important;
+  max-width: 92% !important;
+  max-height: 92% !important;
+  object-fit: contain !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+  display: block !important;
+  border-radius: 0 !important;
+  background: #000 !important;
+}
+
+.photo-fullscreen img {
+  max-width: 96vw !important;
+  max-height: 96vh !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+
