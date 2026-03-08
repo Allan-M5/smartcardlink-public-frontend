@@ -1,21 +1,27 @@
+﻿(function () {
+  'use strict';
 
-document.addEventListener('DOMContentLoaded',()=>{
+  function bindFallback() {
+    var btn = document.getElementById('bookAppointmentBtn');
+    if (!btn) return;
+    if (btn.dataset.bound === '1') return;
 
- const btn=document.getElementById('bookAppointmentBtn');
- if(!btn) return;
-
- btn.addEventListener('click',()=>{
-  const email=document.getElementById('emailMain')?.textContent || '';
-  if(!email){
-   alert('Booking email unavailable');
-   return;
+    btn.addEventListener('click', function (event) {
+      if (btn.dataset.bound === '1') return;
+      var bookingUrl = window.__SCL_BOOKING_URL__ || '';
+      if (!bookingUrl) return;
+      event.preventDefault();
+      if (/^mailto:/i.test(bookingUrl)) {
+        window.location.href = bookingUrl;
+      } else {
+        window.open(bookingUrl, '_blank', 'noopener');
+      }
+    });
   }
 
-  const subject=encodeURIComponent('Appointment Request');
-  const body=encodeURIComponent('Hello, I would like to book an appointment.');
-
-  window.location.href='mailto:'+email+'?subject='+subject+'&body='+body;
- });
-
-});
-
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindFallback);
+  } else {
+    bindFallback();
+  }
+})();

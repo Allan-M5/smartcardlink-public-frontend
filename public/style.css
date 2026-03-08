@@ -886,3 +886,188 @@ body {
   color:#000;
 }
 
+
+/* === SmartCardLink public vCard targeted overrides === */
+.vcard::before {
+  box-shadow: 0 0 22px 4px var(--theme-color), 0 0 40px 8px var(--theme-color) !important;
+  opacity: 0.62 !important;
+}
+
+@keyframes theme-heartbeat {
+  0% {
+    box-shadow: 0 0 22px 4px var(--theme-color), 0 0 40px 8px var(--theme-color);
+    opacity: 0.48;
+  }
+  50% {
+    box-shadow: 0 0 35px 10px var(--theme-color), 0 0 52px 14px var(--theme-color);
+    transform: scale(1.006);
+    opacity: 0.82;
+  }
+  100% {
+    box-shadow: 0 0 22px 4px var(--theme-color), 0 0 40px 8px var(--theme-color);
+    transform: scale(1);
+    opacity: 0.48;
+  }
+}
+
+.full-name,
+.title-position,
+.contact-label,
+.dropdown-btn,
+.link-btn,
+.hours-table th,
+.bio-label,
+.store,
+.action-btn i,
+.social-btn i {
+  color: var(--theme-color);
+}
+
+.job-name {
+  color: #fff !important;
+}
+
+.more-info-btn {
+  background: #000 !important;
+  color: #fff !important;
+  border: 1px solid var(--theme-color) !important;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset;
+}
+
+.more-info-btn:hover,
+.more-info-btn:active {
+  background: #D1D5DB !important;
+  border-color: #D1D5DB !important;
+  color: #000 !important;
+}
+
+.popup {
+  background: rgba(10, 10, 10, 0.92) !important;
+  color: #fff !important;
+}
+
+.about-title {
+  background: var(--theme-color) !important;
+  color: #000 !important;
+}
+
+.about-bio-box {
+  background: #000 !important;
+  border: 1px solid var(--theme-color) !important;
+}
+
+.bio-label {
+  color: var(--theme-color) !important;
+}
+
+.bio-text {
+  color: #fff !important;
+}
+
+.card-scroll {
+  scrollbar-color: var(--theme-color) transparent !important;
+}
+
+.card-scroll::-webkit-scrollbar-thumb {
+  background: var(--theme-color) !important;
+  border-radius: 999px;
+}
+
+.photo-swipe-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.photo-swipe-track {
+  display: flex;
+  width: 200%;
+  height: 100%;
+  transition: transform 0.35s ease;
+  will-change: transform;
+}
+
+.photo-panel,
+.qr-panel {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  background: #000;
+}
+
+.photo-panel img,
+.qr-panel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.qr-panel img {
+  object-fit: contain;
+  padding: 14px;
+  background: #000;
+}
+
+.swipe-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  color: #fff;
+  background: rgba(0, 0, 0, 0.34);
+  border-radius: 14px;
+  padding: 6px 12px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  animation: hintLoop 6s infinite;
+}
+
+@keyframes hintLoop {
+  0%, 100% { opacity: 0; }
+  18%, 62% { opacity: 1; }
+  78% { opacity: 0; }
+}
+
+.photo-fullscreen {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-fullscreen img {
+  max-width: 96vw;
+  max-height: 96vh;
+  object-fit: contain;
+}
+
+.link-btn,
+.social-btn,
+.book-btn,
+.back-btn,
+.action-btn {
+  outline: none;
+}
+
+.link-btn.disabled,
+.social-btn.disabled,
+.book-btn.disabled,
+.action-btn.disabled {
+  opacity: 0.72;
+}
+
+.list-item.disabled em {
+  color: #d5d5d5;
+  font-style: italic;
+}
