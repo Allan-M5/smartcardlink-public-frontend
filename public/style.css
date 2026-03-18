@@ -1131,6 +1131,14 @@ body {
   padding: 20px;
 }
 
+.access-modal[hidden] {
+  display: none !important;
+}
+
+.modal[hidden] {
+  display: none !important;
+}
+
 .access-card {
   width: 100%;
   max-width: 420px;

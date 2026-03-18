@@ -126,19 +126,37 @@
         node.hidden = !message;
     }
 
-    function openModal(modal, input, errorNode) {
-        if (errorNode) showError(errorNode, '');
-        if (input) input.value = '';
-        setHidden(modal, false);
-        window.setTimeout(() => {
-            if (input) input.focus();
-        }, 30);
+function openModal(modal, focusNode, errorNode) {
+    if (!modal) return;
+
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+
+    if (typeof modal.inert !== 'undefined') {
+        modal.inert = false;
     }
 
-    function closeModal(modal, errorNode) {
-        if (errorNode) showError(errorNode, '');
-        setHidden(modal, true);
+    if (errorNode) errorNode.textContent = '';
+
+    setTimeout(() => {
+        if (focusNode && typeof focusNode.focus === 'function') {
+            focusNode.focus();
+        }
+    }, 0);
+}
+
+function closeModal(modal, errorNode) {
+    if (!modal) return;
+
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+
+    if (typeof modal.inert !== 'undefined') {
+        modal.inert = true;
     }
+
+    if (errorNode) errorNode.textContent = '';
+}
 
     function showMessage(msg, isError = false) {
         if (!vcardContainer) return;
@@ -670,14 +688,17 @@ END:VCALENDAR`;
         setupPrimaryLinks(client);
         renderResumeAndReminder(client);
         setAnalyticsCounts(client.analytics || {});
-        wireFooterActions(client);
-        wireResumeButtons(client);
-        wireModalButtons();
+wireFooterActions(client);
+wireResumeButtons(client);
+wireModalButtons();
 
-        if (sections.analyticsPanel) sections.analyticsPanel.hidden = true;
+closeModal(sections.resumeAccessModal, errors.resumeAccess);
+closeModal(sections.analyticsAccessModal, errors.analyticsAccess);
 
-        setHidden(popup1, false);
-        setHidden(popup2, true);
+if (sections.analyticsPanel) sections.analyticsPanel.hidden = true;
+
+setHidden(popup1, false);
+setHidden(popup2, true);
 
         if (buttons.moreInfo) {
             buttons.moreInfo.onclick = () => {
