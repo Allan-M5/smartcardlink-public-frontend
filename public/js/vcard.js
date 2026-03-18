@@ -400,12 +400,41 @@ END:VCARD`;
         btn.onclick = () => window.open(finalValue, '_blank', 'noopener,noreferrer');
     }
 
-    function setAnalyticsCounts(analytics) {
-        const safe = analytics || {};
-        if (counts.profileAccessed) counts.profileAccessed.textContent = String(safe.profileViews || 0);
-        if (counts.resumeViewed) counts.resumeViewed.textContent = String(safe.resumeViews || 0);
-        if (counts.resumeDownloaded) counts.resumeDownloaded.textContent = String(safe.resumeDownloads || 0);
-    }
+function setAnalyticsCounts(analytics) {
+    const safe = analytics || {};
+    if (counts.profileAccessed) counts.profileAccessed.textContent = String(safe.profileViews || 0);
+    if (counts.resumeViewed) counts.resumeViewed.textContent = String(safe.resumeViews || 0);
+    if (counts.resumeDownloaded) counts.resumeDownloaded.textContent = String(safe.resumeDownloads || 0);
+}
+
+function renderWorkingHours(client) {
+    const table = document.getElementById('hoursTable');
+    if (!table) return;
+
+    const tbody = table.querySelector('tbody');
+    if (!tbody) return;
+
+    const hours = client.workingHours || {};
+
+    const safe = (value) => {
+        const text = String(value || '').trim();
+        return text || '—';
+    };
+
+    const rows = [
+        ['Mon-Fri', safe(hours.monFriStart), safe(hours.monFriEnd)],
+        ['Saturday', safe(hours.satStart), safe(hours.satEnd)],
+        ['Sunday', safe(hours.sunStart), safe(hours.sunEnd)]
+    ];
+
+    tbody.innerHTML = rows.map(([day, start, end]) => `
+        <tr>
+            <td>${day}</td>
+            <td>${start}</td>
+            <td>${end}</td>
+        </tr>
+    `).join('');
+}
 
 function renderResumeAndReminder(client) {
     const packageType = String(client.packageType || '').toLowerCase().trim();
@@ -730,10 +759,11 @@ function wireResumeButtons(client) {
         if (emailMain) emailMain.textContent = client.email1 || 'Not Provided';
         if (labels.bioText) labels.bioText.textContent = client.bio || 'Professional Profile';
 
-        setupActions(client);
-        setupPrimaryLinks(client);
-        renderResumeAndReminder(client);
-        setAnalyticsCounts(client.analytics || {});
+setupActions(client);
+setupPrimaryLinks(client);
+renderResumeAndReminder(client);
+renderWorkingHours(client);
+setAnalyticsCounts(client.analytics || {});
 wireFooterActions(client);
 wireResumeButtons(client);
 wireModalButtons();

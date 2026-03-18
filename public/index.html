@@ -91,14 +91,14 @@
                 </div>
               </div>
 
-              <div class="resume-actions">
-                <button id="viewResumeBtn" class="resume-btn">
-                  <i class="fa fa-file-lines"></i> View Resume
-                </button>
-                <button id="downloadResumeBtn" class="resume-btn secondary">
-                  <i class="fa fa-download"></i> Download Resume
-                </button>
-              </div>
+<div class="resume-actions">
+  <button id="viewResumeLockedBtn" class="resume-btn resume-lock-btn">
+    <i class="fa fa-lock"></i> View Resume
+  </button>
+  <button id="downloadResumeLockedBtn" class="resume-btn secondary resume-lock-btn">
+    <i class="fa fa-lock"></i> Download Resume
+  </button>
+</div>
             </section>
 
             <section id="resumeLockedSection" class="resume-section locked" hidden>
@@ -144,17 +144,20 @@
 
             <button id="bookAppointmentBtn" class="book-btn"><i class="fa fa-calendar-alt"></i> Book Appointment</button>
 
-            <div id="contactReminderWrap" class="reminder-wrap" hidden>
-              <button id="contactReminderBtn" class="reminder-btn">
-                <i class="fa fa-bell"></i> <span id="contactReminderText">Remind me to contact</span>
-              </button>
-            </div>
+<div id="contactReminderWrap" class="reminder-wrap" hidden>
+  <button id="contactReminderBtn" class="reminder-btn reminder-pro-btn">
+    <i class="fa fa-bell"></i>
+    <span id="contactReminderText">Remind me to contact</span>
+    <span class="inline-pro-tag">PRO</span>
+  </button>
+</div>
 
-            <div id="contactReminderLockedWrap" class="reminder-wrap" hidden>
-              <button id="contactReminderLockedBtn" class="reminder-btn locked-btn">
-                <i class="fa fa-lock"></i> <span id="contactReminderLockedText">Remind me to contact</span> <span class="inline-pro-tag">PRO</span>
-              </button>
-            </div>
+<div id="contactReminderLockedWrap" class="reminder-wrap" hidden>
+  <button id="contactReminderLockedBtn" class="reminder-btn reminder-pro-btn">
+    <span id="contactReminderLockedText">Remind me to contact</span>
+    <span class="inline-pro-tag">PRO</span>
+  </button>
+</div>
 
 <div class="social-grid">
   <button id="facebookBtn" class="social-btn facebook-hover"><i class="fa-brands fa-facebook-f"></i> Facebook</button>
@@ -202,9 +205,9 @@
       <i class="fa fa-share-nodes"></i> Share
     </button>
 
-    <button id="analyticsBtn" class="footer-action-btn" type="button">
-      <i class="fa fa-chart-column"></i> View Analytics
-    </button>
+<button id="analyticsBtn" class="footer-action-btn analytics-lock-btn" type="button">
+  <i class="fa fa-lock"></i> View Analytics
+</button>
   </div>
 </footer>
         </div>
