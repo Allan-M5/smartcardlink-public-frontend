@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    const API_ROOT = window.location.origin;
+    const API_ROOT = 'https://smartcardlink-api.onrender.com';
     const APPLY_VCARD_URL = 'https://smartcardlink-dashboard-frontend.onrender.com/client-form.html';
 
     const el = (id) => document.getElementById(id);
