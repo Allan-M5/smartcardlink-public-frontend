@@ -407,8 +407,12 @@ END:VCARD`;
         if (counts.resumeDownloaded) counts.resumeDownloaded.textContent = String(safe.resumeDownloads || 0);
     }
 
-    function renderResumeAndReminder(client) {
-        const isPro = String(client.packageType || 'standard').toLowerCase() === 'pro';
+function renderResumeAndReminder(client) {
+    const packageType = String(client.packageType || '').toLowerCase().trim();
+    const isPro =
+        packageType === 'pro' ||
+        !!(client.resume && client.resume.enabled) ||
+        !!client.themeColor;
         const name = client.fullName || 'this profile owner';
         const resumeEnabled = !!(client.resume && client.resume.enabled && client.resume.fileUrl);
 
@@ -595,7 +599,12 @@ END:VCALENDAR`;
 
         if (buttons.analytics) {
             buttons.analytics.onclick = () => {
-                const isPro = String(client.packageType || 'standard').toLowerCase() === 'pro';
+        const packageType = String(client.packageType || '').toLowerCase().trim();
+        const isPro =
+            packageType === 'pro' ||
+            !!(client.resume && client.resume.enabled) ||
+            !!client.themeColor;
+
                 if (!isPro) {
                     alertMsg('This feature is available on PRO vCard.');
                     return;
@@ -606,8 +615,12 @@ END:VCALENDAR`;
         }
     }
 
-    function wireResumeButtons(client) {
-        const isPro = String(client.packageType || 'standard').toLowerCase() === 'pro';
+function wireResumeButtons(client) {
+    const packageType = String(client.packageType || '').toLowerCase().trim();
+    const isPro =
+        packageType === 'pro' ||
+        !!(client.resume && client.resume.enabled) ||
+        !!client.themeColor;
         const resumeEnabled = !!(client.resume && client.resume.enabled && client.resume.fileUrl);
 
         if (buttons.viewResumeLocked) {
