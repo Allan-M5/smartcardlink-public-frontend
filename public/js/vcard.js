@@ -181,11 +181,17 @@ function closeModal(modal, errorNode) {
         if (msgEl) setHidden(msgEl, true);
     }
 
-    function applyTheme(client) {
-        const packageType = String(client.packageType || 'standard').toLowerCase();
-        const theme = packageType === 'pro'
-            ? (client.themeColor || '#FFD700')
-            : '#FFD700';
+function applyTheme(client) {
+    const packageType = String(client.packageType || '').toLowerCase().trim();
+
+    const inferredPro =
+        packageType === 'pro' ||
+        !!(client.resume && client.resume.enabled) ||
+        !!client.themeColor;
+
+    const theme = inferredPro
+        ? (client.themeColor || '#FFD700')
+        : '#FFD700';
 
         document.documentElement.style.setProperty('--theme-color', theme);
 
@@ -229,81 +235,108 @@ function closeModal(modal, errorNode) {
         }
     }
 
-    function renderPhoto(url, qrUrl = '') {
-        if (!photoArea) return;
+function renderPhoto(url, qrUrl = '') {
+    if (!photoArea) return;
 
-        const photoSrc = url || '/public/images/default-photo.png';
-        const qrSrc = qrUrl || '';
+    const photoSrc = url || '/public/images/default-photo.png';
+    const qrSrc = qrUrl || '';
 
-        if (!qrSrc) {
-            photoArea.innerHTML = `<img src="${photoSrc}" alt="Profile">`;
-            return;
-        }
-
-        photoArea.innerHTML = `
-            <div class="photo-swipe-container">
-                <div class="photo-swipe-track">
-                    <div class="photo-panel"><img src="${photoSrc}" alt="Profile"></div>
-                    <div class="qr-panel"><img src="${qrSrc}" alt="QR Code"></div>
-                </div>
-                <div class="swipe-hint">Swipe to view QR</div>
-            </div>
-        `;
-
-        const track = photoArea.querySelector('.photo-swipe-track');
-        const panels = photoArea.querySelectorAll('img');
-
-        let startX = 0;
-        let showingQR = false;
-        let pressTimer;
-
-        function updateView() {
-            track.style.transform = showingQR ? 'translateX(-50%)' : 'translateX(0)';
-        }
-
-        function openFullscreen(src) {
-            const overlay = document.createElement('div');
-            overlay.className = 'photo-fullscreen';
-            overlay.innerHTML = `<img src="${src}" alt="Fullscreen">`;
-            document.body.appendChild(overlay);
-        }
-
-        function startPress(src) {
-            clearTimeout(pressTimer);
-            pressTimer = setTimeout(() => openFullscreen(src), 600);
-        }
-
-        function cancelPress() {
-            clearTimeout(pressTimer);
-        }
-
-        track.addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
-        }, { passive: true });
-
-        track.addEventListener('touchend', (e) => {
-            const endX = e.changedTouches[0].clientX;
-            const diff = startX - endX;
-
-            if (diff > 60) showingQR = true;
-            if (diff < -60) showingQR = false;
-
-            updateView();
-        }, { passive: true });
-
-        track.addEventListener('click', () => {
-            showingQR = !showingQR;
-            updateView();
-        });
-
-        panels.forEach((img) => {
-            img.addEventListener('mousedown', () => startPress(img.src));
-            img.addEventListener('mouseup', cancelPress);
-            img.addEventListener('mouseleave', cancelPress);
-            img.addEventListener('touchstart', () => startPress(img.src), { passive: true });
-            img.addEventListener('touchend', cancelPress, { passive: true });
-        });
+    if (!qrSrc) {
+        photoArea.innerHTML = `<img src="${photoSrc}" alt="Profile" class="profile-main-image">`;
+        return;
     }
+
+    photoArea.innerHTML = `
+        <div class="photo-swipe-container">
+            <div class="photo-swipe-track">
+                <div class="photo-panel">
+                    <img src="${photoSrc}" alt="Profile" class="profile-main-image">
+                </div>
+                <div class="qr-panel">
+                    <img data-src="${qrSrc}" alt="QR Code" class="profile-qr-image lazy-qr">
+                </div>
+            </div>
+            <div class="swipe-hint" id="swipeHint">Swipe to view QR</div>
+        </div>
+    `;
+
+    const track = photoArea.querySelector('.photo-swipe-track');
+    const panels = photoArea.querySelectorAll('img');
+    const qrImg = photoArea.querySelector('.lazy-qr');
+    const swipeHint = photoArea.querySelector('#swipeHint');
+
+    let startX = 0;
+    let showingQR = false;
+    let pressTimer;
+    let qrLoaded = false;
+
+    function ensureQrLoaded() {
+        if (!qrImg || qrLoaded) return;
+        const pendingSrc = qrImg.getAttribute('data-src');
+        if (!pendingSrc) return;
+        qrImg.src = pendingSrc;
+        qrLoaded = true;
+    }
+
+    function updateView() {
+        track.style.transform = showingQR ? 'translateX(-50%)' : 'translateX(0)';
+
+        if (swipeHint) {
+            swipeHint.textContent = showingQR ? 'Swipe to view Photo' : 'Swipe to view QR';
+        }
+
+        if (showingQR) {
+            ensureQrLoaded();
+        }
+    }
+
+    function openFullscreen(src) {
+        const overlay = document.createElement('div');
+        overlay.className = 'photo-fullscreen';
+        overlay.innerHTML = `<img src="${src}" alt="Fullscreen">`;
+        document.body.appendChild(overlay);
+    }
+
+    function startPress(src) {
+        clearTimeout(pressTimer);
+        pressTimer = setTimeout(() => openFullscreen(src), 600);
+    }
+
+    function cancelPress() {
+        clearTimeout(pressTimer);
+    }
+
+    setTimeout(() => {
+        ensureQrLoaded();
+    }, 900);
+
+    track.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+    }, { passive: true });
+
+    track.addEventListener('touchend', (e) => {
+        const endX = e.changedTouches[0].clientX;
+        const diff = startX - endX;
+
+        if (diff > 60) showingQR = true;
+        if (diff < -60) showingQR = false;
+
+        updateView();
+    }, { passive: true });
+
+    track.addEventListener('click', () => {
+        showingQR = !showingQR;
+        updateView();
+    });
+
+    panels.forEach((img) => {
+        img.addEventListener('mousedown', () => startPress(img.currentSrc || img.src || img.dataset.src));
+        img.addEventListener('mouseup', cancelPress);
+        img.addEventListener('mouseleave', cancelPress);
+        img.addEventListener('touchstart', () => startPress(img.currentSrc || img.src || img.dataset.src), { passive: true });
+        img.addEventListener('touchend', cancelPress, { passive: true });
+    });
+}
 
     function setupActions(client) {
         const phone = client.phone1 || '';

@@ -505,9 +505,15 @@ body {
   margin-bottom: 15px;
   margin-top: 10px;
 }
-.about-title {
-  background: linear-gradient(90deg, #ffd700 0%, #fdb931 100%);
-  color: #000;
+
+#popup2 .about-header,
+#popup2 .about-title-wrap {
+  background: transparent !important;
+}
+
+#popup2 .about-title {
+  background: var(--theme-color) !important;
+  color: #111 !important;
   font-weight: 800;
   text-align: center;
   padding: 10px;
@@ -515,14 +521,16 @@ body {
   margin-bottom: 12px;
   text-transform: uppercase;
   font-size: 16px;
-  box-shadow: 0 4px 10px rgba(253, 185, 49, 0.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
+
 .about-bio-box {
   background: rgba(255, 255, 255, 0.05);
   padding: 14px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
 .bio-label {
   color: var(--theme-color);
   font-weight: 700;
@@ -745,13 +753,14 @@ body {
   opacity: 1 !important;
 }
 
-/* === SmartCardLink Photo ? QR Swipe === */
+/* === SmartCardLink Photo / QR Swipe === */
 .photo-swipe-container {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
   touch-action: pan-y;
+  border-radius: 14px;
 }
 
 .photo-swipe-track {
@@ -763,40 +772,61 @@ body {
 
 .photo-panel,
 .qr-panel {
-  width: 100%;
+  width: 50%;
   height: 100%;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
-.photo-panel img,
-.qr-panel img {
+.profile-main-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+}
+
+.profile-qr-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  padding: 10px;
+  box-sizing: border-box;
+  background: transparent;
 }
 
 .swipe-hint {
   position: absolute;
-  bottom: 12px;
-  background: rgba(0, 0, 0, 0.65);
-  color: #fff;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 150px;
+  max-width: calc(100% - 20px);
   padding: 6px 12px;
-  border-radius: 14px;
-  font-size: 12px;
-  animation: swipeHintFade 4s ease forwards;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.48);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  box-sizing: border-box;
+  backdrop-filter: blur(6px);
+  animation: swipeHintBreath 1.8s ease-in-out infinite;
+  z-index: 3;
 }
 
-@keyframes swipeHintFade {
-  0%,
-  70% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
+@keyframes swipeHintBreath {
+  0% { opacity: 0.72; transform: translateX(-50%) scale(0.98); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1); }
+  100% { opacity: 0.72; transform: translateX(-50%) scale(0.98); }
 }
 
 .photo-fullscreen-backdrop {
