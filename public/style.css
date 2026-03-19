@@ -1017,6 +1017,11 @@ body {
   letter-spacing: 0.03em;
 }
 
+.analytics-lock-btn .inline-pro-tag,
+.reminder-pro-btn .inline-pro-tag {
+  margin-left: 4px;
+}
+
 .resume-actions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1060,22 +1065,9 @@ body {
   border-color: rgba(255, 255, 255, 0.25);
 }
 
-.locked-btn {
+.reminder-pro-btn,
+.analytics-lock-btn {
   position: relative;
-}
-
-.locked-btn::after {
-  content: "PRO";
-  position: absolute;
-  top: -6px;
-  right: 8px;
-  padding: 1px 7px;
-  border-radius: 999px;
-  font-size: 8px;
-  font-weight: 800;
-  color: #ffd700;
-  background: #111;
-  border: 1px solid rgba(255, 215, 0, 0.35);
 }
 
 .links-grid-4 {
@@ -1166,6 +1158,9 @@ body {
   padding: 6px 8px;
   background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.22);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .popup-footer-actions {

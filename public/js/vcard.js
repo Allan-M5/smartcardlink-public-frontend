@@ -436,6 +436,35 @@ function renderWorkingHours(client) {
     `).join('');
 }
 
+function renderWorkingHours(client) {
+    const table = document.getElementById('hoursTable');
+    if (!table) return;
+
+    const tbody = table.querySelector('tbody');
+    if (!tbody) return;
+
+    const hours = client.workingHours || {};
+
+    const safe = (value) => {
+        const text = String(value || '').trim();
+        return text || '—';
+    };
+
+    const rows = [
+        ['Mon-Fri', safe(hours.monFriStart), safe(hours.monFriEnd)],
+        ['Saturday', safe(hours.satStart), safe(hours.satEnd)],
+        ['Sunday', safe(hours.sunStart), safe(hours.sunEnd)]
+    ];
+
+    tbody.innerHTML = rows.map(([day, start, end]) => `
+        <tr>
+            <td>${day}</td>
+            <td>${start}</td>
+            <td>${end}</td>
+        </tr>
+    `).join('');
+}
+
 function renderResumeAndReminder(client) {
     const packageType = String(client.packageType || '').toLowerCase().trim();
     const isPro =
