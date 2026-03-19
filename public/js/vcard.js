@@ -433,35 +433,58 @@
     return values;
   }
 
-  function renderContactDropdown(listNode, buttonNode, values, mode) {
-    if (!listNode || !buttonNode) return;
+function renderContactDropdown(listNode, buttonNode, values, mode) {
+  if (!listNode || !buttonNode) return;
 
-    const normalized = Array.isArray(values) ? values.filter(Boolean) : [];
+  const normalized = Array.isArray(values) ? values.filter(Boolean) : [];
 
-    if (!normalized.length) {
-      listNode.innerHTML = `<div class="list-item disabled"><em>No additional contact</em></div>`;
-      buttonNode.disabled = false;
-    } else {
-      listNode.innerHTML = normalized.map((value) => `<button type="button" class="list-item contact-list-btn">${value}</button>`).join('');
-      listNode.querySelectorAll('.contact-list-btn').forEach((item, index) => {
-        item.addEventListener('click', () => {
-          const value = normalized[index];
-          if (mode === 'phone') {
-            window.location.href = `tel:${value}`;
-          } else {
-            window.location.href = `mailto:${value}`;
-          }
-        });
+  // Always start collapsed
+  listNode.hidden = true;
+  buttonNode.setAttribute('aria-expanded', 'false');
+  buttonNode.classList.remove('open');
+
+  if (!normalized.length) {
+    listNode.innerHTML = `<div class="list-item disabled"><em>No additional contact</em></div>`;
+  } else {
+    listNode.innerHTML = normalized
+      .map((value) => `<button type="button" class="list-item contact-list-btn">${value}</button>`)
+      .join('');
+
+    listNode.querySelectorAll('.contact-list-btn').forEach((item, index) => {
+      item.addEventListener('click', () => {
+        const value = normalized[index];
+        if (mode === 'phone') {
+          window.location.href = `tel:${value}`;
+        } else {
+          window.location.href = `mailto:${value}`;
+        }
+      });
+    });
+  }
+
+  buttonNode.onclick = () => {
+    const willOpen = listNode.hidden;
+
+    // close sibling dropdown first
+    const parentSection = listNode.closest('.contact-section');
+    if (parentSection) {
+      parentSection.querySelectorAll('.box-list').forEach((box) => {
+        if (box !== listNode) box.hidden = true;
+      });
+
+      parentSection.querySelectorAll('.dropdown-btn').forEach((btn) => {
+        if (btn !== buttonNode) {
+          btn.setAttribute('aria-expanded', 'false');
+          btn.classList.remove('open');
+        }
       });
     }
 
-    buttonNode.onclick = () => {
-      const isHidden = listNode.hidden;
-      listNode.hidden = !isHidden ? true : false;
-      buttonNode.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
-      buttonNode.classList.toggle('open', isHidden);
-    };
-  }
+    listNode.hidden = !willOpen;
+    buttonNode.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+    buttonNode.classList.toggle('open', willOpen);
+  };
+}
 
   function renderPackageUI(client) {
     const isPro = isProPackage(client);
