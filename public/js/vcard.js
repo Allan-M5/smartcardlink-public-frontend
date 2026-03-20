@@ -7,6 +7,17 @@
 
   const el = (id) => document.getElementById(id);
   const qs = (selector, root = document) => root.querySelector(selector);
+const qsa = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+
+function forceClick(selector, handler) {
+  qsa(selector).forEach((node) => {
+    node.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      handler(node, e);
+    }, true);
+  });
+}
 
   const vcardContainer = el('vcard');
   const popup1 = el('popup1');
@@ -486,148 +497,228 @@ function renderContactDropdown(listNode, buttonNode, values, mode) {
   };
 }
 
-  function renderPackageUI(client) {
-    const isPro = isProPackage(client);
-    const resumeEnabled = !!(client.resume && client.resume.enabled && client.resume.fileUrl);
-    const name = client.fullName || 'this profile owner';
+function renderPackageUI(client) {
+  const isPro = isProPackage(client);
+  const resumeEnabled = !!(client.resume && client.resume.enabled && client.resume.fileUrl);
+  const name = client.fullName || 'this profile owner';
 
-    if (brandHeader) brandHeader.textContent = isPro ? 'SMARTCARDLINK - PRO' : 'SMARTCARDLINK';
-
-    if (labels.bioText) labels.bioText.textContent = client.bio || 'Professional Profile';
-    if (labels.reminderText) labels.reminderText.textContent = `Remind me to contact ${name}`;
-    if (labels.reminderLockedText) labels.reminderLockedText.textContent = `Remind me to contact ${name}`;
-
-    setHidden(sections.resume, !(isPro && resumeEnabled));
-    setHidden(sections.resumeLocked, isPro && resumeEnabled);
-    setHidden(sections.reminderWrap, !isPro);
-    setHidden(sections.reminderLockedWrap, isPro);
-
-    if (labels.analyticsProTag) labels.analyticsProTag.hidden = isPro;
+  if (brandHeader) {
+    brandHeader.textContent = isPro ? 'SMARTCARDLINK - PRO' : 'SMARTCARDLINK';
   }
 
-  function buildReminderIcs(client) {
-    const now = new Date();
-    const start = new Date(now.getTime() + (24 * 60 * 60 * 1000));
-    start.setHours(9, 0, 0, 0);
-    const end = new Date(start.getTime() + (30 * 60 * 1000));
-
-    const toUtcStamp = (value) => {
-      const yyyy = value.getUTCFullYear();
-      const mm = String(value.getUTCMonth() + 1).padStart(2, '0');
-      const dd = String(value.getUTCDate()).padStart(2, '0');
-      const hh = String(value.getUTCHours()).padStart(2, '0');
-      const min = String(value.getUTCMinutes()).padStart(2, '0');
-      return `${yyyy}${mm}${dd}T${hh}${min}00Z`;
-    };
-
-    const title = `Contact ${client.fullName || 'Profile Owner'} — ${client.title || 'Professional'}`;
-    const description = [
-      `Remember to contact ${client.fullName || 'this profile owner'}.`,
-      client.title ? `Title: ${client.title}` : '',
-      client.phone1 ? `Phone: ${client.phone1}` : '',
-      client.email1 ? `Email: ${client.email1}` : '',
-      client.vcardUrl ? `Profile: ${client.vcardUrl}` : window.location.href
-    ].filter(Boolean).join('\n');
-
-    return `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//SmartCardLink//Reminder//EN\nBEGIN:VEVENT\nUID:${Date.now()}@smartcardlink\nDTSTAMP:${toUtcStamp(start)}\nDTSTART:${toUtcStamp(start)}\nDTEND:${toUtcStamp(end)}\nSUMMARY:${title}\nDESCRIPTION:${description}\nEND:VEVENT\nEND:VCALENDAR`;
+  if (labels.bioText) {
+    labels.bioText.textContent = client.bio || 'Professional Profile';
   }
 
-  function downloadReminder(client) {
-    const ics = buildReminderIcs(client);
-    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `contact-${(client.fullName || 'profile-owner').toLowerCase().replace(/\s+/g, '-')}-reminder.ics`;
-    a.click();
-    window.setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+  if (labels.reminderText) {
+    labels.reminderText.textContent = `Remind me to contact ${name}`;
   }
 
-  async function requestAnalyticsAccess() {
-    if (!currentClient || !isProPackage(currentClient)) return;
+  if (labels.reminderLockedText) {
+    labels.reminderLockedText.textContent = `Remind me to contact ${name}`;
+  }
 
-    const slug = currentClient.slug || '';
-    const accessToken = String(inputs.analyticsAccess?.value || '').trim();
+  // Standard = locked resume section only
+  // PRO = actual resume section always visible, even if no PDF uploaded yet
+  setHidden(sections.resume, !isPro);
+  setHidden(sections.resumeLocked, isPro);
 
-    if (!accessToken) {
-      showError(errors.analyticsAccess, 'Access token is required.');
-      return;
-    }
+  setHidden(sections.reminderWrap, !isPro);
+  setHidden(sections.reminderLockedWrap, isPro);
 
+  if (labels.analyticsProTag) {
+    labels.analyticsProTag.hidden = isPro;
+  }
+}
+
+function buildReminderIcs(client, selectedDateTime) {
+  const chosen = selectedDateTime ? new Date(selectedDateTime) : new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+  if (Number.isNaN(chosen.getTime())) {
+    throw new Error('Invalid reminder date/time');
+  }
+
+  const start = new Date(chosen);
+  const end = new Date(start.getTime() + 30 * 60 * 1000);
+
+  const toUtcStamp = (value) => {
+    const yyyy = value.getUTCFullYear();
+    const mm = String(value.getUTCMonth() + 1).padStart(2, '0');
+    const dd = String(value.getUTCDate()).padStart(2, '0');
+    const hh = String(value.getUTCHours()).padStart(2, '0');
+    const min = String(value.getUTCMinutes()).padStart(2, '0');
+    return `${yyyy}${mm}${dd}T${hh}${min}00Z`;
+  };
+
+  const title = `Contact ${client.fullName || 'Profile Owner'} — ${client.title || 'Professional'}`;
+  const description = [
+    `Remember to contact ${client.fullName || 'this profile owner'}.`,
+    client.title ? `Title: ${client.title}` : '',
+    client.phone1 ? `Phone: ${client.phone1}` : '',
+    client.email1 ? `Email: ${client.email1}` : '',
+    window.location.href ? `Profile: ${window.location.href}` : ''
+  ].filter(Boolean).join('\n');
+
+  return `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//SmartCardLink//Reminder//EN
+BEGIN:VEVENT
+UID:${Date.now()}@smartcardlink
+DTSTAMP:${toUtcStamp(new Date())}
+DTSTART:${toUtcStamp(start)}
+DTEND:${toUtcStamp(end)}
+SUMMARY:${title}
+DESCRIPTION:${description}
+END:VEVENT
+END:VCALENDAR`;
+}
+
+function openReminderPicker(client) {
+  const overlay = document.createElement('div');
+  overlay.className = 'access-modal';
+  overlay.innerHTML = `
+    <div class="access-card">
+      <div class="access-title">Set Reminder Time</div>
+      <div class="access-subtitle">Choose the exact date and time for this reminder.</div>
+      <input type="datetime-local" class="access-input" id="reminderDateTimeInput">
+      <div class="access-actions">
+        <button type="button" class="access-btn secondary" id="reminderCancelBtn">Cancel</button>
+        <button type="button" class="access-btn" id="reminderConfirmBtn">Download</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  const input = overlay.querySelector('#reminderDateTimeInput');
+  const cancelBtn = overlay.querySelector('#reminderCancelBtn');
+  const confirmBtn = overlay.querySelector('#reminderConfirmBtn');
+
+  const now = new Date();
+  now.setMinutes(now.getMinutes() + 5);
+  const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16);
+
+  input.min = local;
+  input.value = local;
+
+  cancelBtn.onclick = () => overlay.remove();
+
+  confirmBtn.onclick = () => {
     try {
-      showError(errors.analyticsAccess, '');
-      const res = await fetch(`${API_ROOT}/api/vcard/${encodeURIComponent(slug)}/analytics-access`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ accessToken })
-      });
-
-      const json = await res.json();
-      if (!res.ok || json.status !== 'success') {
-        throw new Error(json.message || 'Access denied.');
-      }
-
-      setAnalyticsCounts(json.data?.analytics || {});
-      closeModal(sections.analyticsAccessModal, errors.analyticsAccess);
-      if (sections.analyticsPanel) sections.analyticsPanel.hidden = false;
+      const ics = buildReminderIcs(client, input.value);
+      const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `contact-${(client.fullName || 'profile-owner').toLowerCase().replace(/\s+/g, '-')}-reminder.ics`;
+      a.click();
+      window.setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+      overlay.remove();
     } catch (error) {
-      showError(errors.analyticsAccess, error.message || 'Access denied.');
+      showToast('Invalid reminder date/time', true);
     }
+  };
+}
+
+function downloadReminder(client) {
+  openReminderPicker(client);
+}
+
+async function requestResumeAccess(mode) {
+  if (!currentClient || !isProPackage(currentClient)) return;
+
+  const slug = currentClient.slug || '';
+  const password = String(inputs.resumeAccess?.value || '').trim();
+
+  if (!password) {
+    showError(errors.resumeAccess, 'Password is required.');
+    return;
   }
 
-  async function requestResumeAccess(mode) {
-    if (!currentClient || !isProPackage(currentClient)) return;
+  const previewTab = mode === 'view' ? window.open('', '_blank') : null;
 
-    const slug = currentClient.slug || '';
-    const password = String(inputs.resumeAccess?.value || '').trim();
+  try {
+    showError(errors.resumeAccess, '');
 
-    if (!password) {
-      showError(errors.resumeAccess, 'Password is required.');
-      return;
+    const res = await fetch(`${API_ROOT}/api/vcard/${encodeURIComponent(slug)}/resume-access`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password, mode })
+    });
+
+    const json = await res.json();
+
+    if (!res.ok || json.status !== 'success') {
+      throw new Error(json.message || 'Resume access denied.');
     }
 
-    try {
-      showError(errors.resumeAccess, '');
-      const res = await fetch(`${API_ROOT}/api/vcard/${encodeURIComponent(slug)}/resume-access`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password, mode })
-      });
+    const payload = json.data || {};
+    closeModal(sections.resumeAccessModal, errors.resumeAccess);
 
-      const json = await res.json();
-      if (!res.ok || json.status !== 'success') {
-        throw new Error(json.message || 'Resume access denied.');
-      }
+    if (!payload.fileUrl) {
+      throw new Error(mode === 'download' ? 'No Resume to Download' : 'Resume Not Provided');
+    }
 
-      const payload = json.data || {};
-      closeModal(sections.resumeAccessModal, errors.resumeAccess);
-
-      if (mode === 'download') {
-        const a = document.createElement('a');
-        a.href = payload.fileUrl;
-        a.download = payload.fileName || 'resume.pdf';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+    if (mode === 'download') {
+      const a = document.createElement('a');
+      a.href = payload.fileUrl;
+      a.download = payload.fileName || 'resume.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } else {
+      if (previewTab) {
+        previewTab.location.href = payload.fileUrl;
       } else {
         window.open(payload.fileUrl, '_blank', 'noopener,noreferrer');
       }
-
-      if (sections.analyticsPanel && !sections.analyticsPanel.hidden) {
-        const next = {
-          profileViews: Number(counts.profileAccessed?.textContent || 0) || 0,
-          resumeViews: Number(counts.resumeViewed?.textContent || 0) || 0,
-          resumeDownloads: Number(counts.resumeDownloaded?.textContent || 0) || 0
-        };
-
-        if (mode === 'download') next.resumeDownloads += 1;
-        else next.resumeViews += 1;
-
-        setAnalyticsCounts(next);
-      }
-    } catch (error) {
-      showError(errors.resumeAccess, error.message || 'Resume access denied.');
     }
+  } catch (error) {
+    if (previewTab && !previewTab.closed) {
+      previewTab.close();
+    }
+    showError(errors.resumeAccess, error.message || 'Resume access denied.');
   }
+}
+
+async function requestAnalyticsAccess() {
+  if (!currentClient || !isProPackage(currentClient)) return;
+
+  const slug = currentClient.slug || '';
+  const accessToken = String(inputs.analyticsAccess?.value || '').trim();
+
+  if (!accessToken) {
+    showError(errors.analyticsAccess, 'Access token is required.');
+    return;
+  }
+
+  try {
+    showError(errors.analyticsAccess, '');
+
+    const res = await fetch(`${API_ROOT}/api/vcard/${encodeURIComponent(slug)}/analytics-access`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ accessToken })
+    });
+
+    const json = await res.json();
+
+    if (!res.ok || json.status !== 'success') {
+      throw new Error(json.message || 'Access denied.');
+    }
+
+    const analytics = json.data?.analytics || {};
+    setAnalyticsCounts(analytics);
+    closeModal(sections.analyticsAccessModal, errors.analyticsAccess);
+
+    if (sections.analyticsPanel) {
+      sections.analyticsPanel.hidden = false;
+    }
+  } catch (error) {
+    showError(errors.analyticsAccess, error.message || 'Access denied.');
+  }
+}
 
   function wireFooterActions(client) {
     if (buttons.apply) buttons.apply.href = APPLY_VCARD_URL;
@@ -666,55 +757,117 @@ function renderContactDropdown(listNode, buttonNode, values, mode) {
     }
   }
 
-  function wireResumeButtons(client) {
-    const isPro = isProPackage(client);
-    const resumeEnabled = !!(client.resume && client.resume.enabled && client.resume.fileUrl);
+function wireResumeButtons(client) {
+  const isPro = isProPackage(client);
+  const resumeEnabled = !!(client.resume && client.resume.enabled && client.resume.fileUrl);
 
-    if (buttons.viewResumeLocked) buttons.viewResumeLocked.onclick = () => showToast(PRO_ONLY_MESSAGE);
-    if (buttons.downloadResumeLocked) buttons.downloadResumeLocked.onclick = () => showToast(PRO_ONLY_MESSAGE);
-    if (buttons.reminderLocked) buttons.reminderLocked.onclick = () => showToast(PRO_ONLY_MESSAGE);
+  const viewSelectors = '#viewResumeBtn, #viewResumeLockedBtn';
+  const downloadSelectors = '#downloadResumeBtn, #downloadResumeLockedBtn';
+  const reminderSelectors = '#contactReminderBtn, #contactReminderLockedBtn';
 
-    if (!isPro) return;
-
-    if (buttons.reminder) {
-      buttons.reminder.onclick = () => downloadReminder(client);
-    }
-
-    if (!resumeEnabled) {
-      if (buttons.viewResume) buttons.viewResume.onclick = () => showToast('Resume is not available on this profile.', true);
-      if (buttons.downloadResume) buttons.downloadResume.onclick = () => showToast('Resume is not available on this profile.', true);
-      return;
-    }
-
-    if (buttons.viewResume) {
-      buttons.viewResume.onclick = () => {
-        pendingResumeMode = 'view';
-        openModal(sections.resumeAccessModal, inputs.resumeAccess, errors.resumeAccess);
-      };
-    }
-
-    if (buttons.downloadResume) {
-      buttons.downloadResume.onclick = () => {
-        pendingResumeMode = 'download';
-        openModal(sections.resumeAccessModal, inputs.resumeAccess, errors.resumeAccess);
-      };
-    }
+  if (!isPro) {
+    forceClick(viewSelectors, () => showToast(PRO_ONLY_MESSAGE));
+    forceClick(downloadSelectors, () => showToast(PRO_ONLY_MESSAGE));
+    forceClick(reminderSelectors, () => showToast(PRO_ONLY_MESSAGE));
+    return;
   }
 
-  function setupPrimaryLinks(client) {
-    const socials = client.socialLinks || {};
-    bindLinkButton(buttons.business, client.businessWebsite, 'url', 'Business URL not provided');
-    bindLinkButton(buttons.portfolio, client.portfolioWebsite, 'url', 'Portfolio URL not provided');
-    bindLinkButton(buttons.location, client.locationMap || client.locationMapUrl, 'url', 'Location map not provided');
-    bindLinkButton(buttons.physical, client.address || client.physicalAddress, 'address', 'Physical address not provided');
-    bindLinkButton(buttons.book, client.appointmentUrl || client.bookingLink, 'url', 'Appointment link not provided');
-    bindLinkButton(buttons.facebook, socials.facebook || client.facebook, 'url', 'Facebook link not provided');
-    bindLinkButton(buttons.instagram, socials.instagram || client.instagram, 'url', 'Instagram link not provided');
-    bindLinkButton(buttons.x, socials.twitter || socials.x || client.twitter || client.x, 'url', 'X link not provided');
-    bindLinkButton(buttons.linkedin, socials.linkedin || client.linkedin, 'url', 'LinkedIn link not provided');
-    bindLinkButton(buttons.tiktok, socials.tiktok || client.tiktok, 'url', 'TikTok link not provided');
-    bindLinkButton(buttons.youtube, socials.youtube || client.youtube, 'url', 'YouTube link not provided');
+  forceClick(reminderSelectors, () => openReminderPicker(client));
+
+  if (!resumeEnabled) {
+    forceClick(viewSelectors, () => showToast('Resume Not Provided', true));
+    forceClick(downloadSelectors, () => showToast('No Resume to Download', true));
+    return;
   }
+
+  forceClick(viewSelectors, () => {
+    pendingResumeMode = 'view';
+    openModal(sections.resumeAccessModal, inputs.resumeAccess, errors.resumeAccess);
+  });
+
+  forceClick(downloadSelectors, () => {
+    pendingResumeMode = 'download';
+    openModal(sections.resumeAccessModal, inputs.resumeAccess, errors.resumeAccess);
+  });
+}
+
+  if (buttons.downloadResume) {
+    buttons.downloadResume.onclick = () => {
+      pendingResumeMode = 'download';
+      openModal(sections.resumeAccessModal, inputs.resumeAccess, errors.resumeAccess);
+    };
+  }
+}
+
+function buildGoogleCalendarUrl(client) {
+  const now = new Date();
+  const start = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  start.setHours(9, 0, 0, 0);
+  const end = new Date(start.getTime() + 30 * 60 * 1000);
+
+  const toLocalCalendarStamp = (date) => {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const hh = String(date.getHours()).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+    return `${yyyy}${mm}${dd}T${hh}${min}00`;
+  };
+
+  const title = `Appointment with ${client.fullName || 'SmartCardLink Contact'}`;
+  const details = [
+    client.title ? `Title: ${client.title}` : '',
+    client.company ? `Company: ${client.company}` : '',
+    client.phone1 ? `Phone: ${client.phone1}` : '',
+    client.email1 ? `Email: ${client.email1}` : '',
+    window.location.href ? `Profile: ${window.location.href}` : ''
+  ].filter(Boolean).join('\n');
+
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: title,
+    details,
+    dates: `${toLocalCalendarStamp(start)}/${toLocalCalendarStamp(end)}`
+  });
+
+  if (client.email1) {
+    params.set('add', client.email1);
+  }
+
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
+function setupPrimaryLinks(client) {
+  const socials = client.socialLinks || {};
+
+  bindLinkButton(buttons.business, client.businessWebsite, 'url', 'Business URL not provided');
+  bindLinkButton(buttons.portfolio, client.portfolioWebsite, 'url', 'Portfolio URL not provided');
+  bindLinkButton(buttons.location, client.locationMap || client.locationMapUrl, 'url', 'Location map not provided');
+  bindLinkButton(buttons.physical, client.address || client.physicalAddress, 'address', 'Physical address not provided');
+
+forceClick('#bookAppointmentBtn', () => {
+  const calendarUrl = buildGoogleCalendarUrl(client);
+  const win = window.open(calendarUrl, '_blank', 'noopener,noreferrer');
+  if (!win) {
+    window.location.href = calendarUrl;
+  }
+});
+
+qsa('#bookAppointmentBtn').forEach((node) => {
+  if (node.tagName === 'A') {
+    node.setAttribute('href', buildGoogleCalendarUrl(client));
+    node.setAttribute('target', '_blank');
+    node.setAttribute('rel', 'noopener noreferrer');
+  }
+});
+
+  bindLinkButton(buttons.facebook, socials.facebook || client.facebook, 'url', 'Facebook link not provided');
+  bindLinkButton(buttons.instagram, socials.instagram || client.instagram, 'url', 'Instagram link not provided');
+  bindLinkButton(buttons.x, socials.twitter || socials.x || client.twitter || client.x, 'url', 'X link not provided');
+  bindLinkButton(buttons.linkedin, socials.linkedin || client.linkedin, 'url', 'LinkedIn link not provided');
+  bindLinkButton(buttons.tiktok, socials.tiktok || client.tiktok, 'url', 'TikTok link not provided');
+  bindLinkButton(buttons.youtube, socials.youtube || client.youtube, 'url', 'YouTube link not provided');
+}
 
   function wireModalButtons() {
     if (buttons.resumeAccessCancel) {

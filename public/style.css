@@ -154,11 +154,11 @@ button {
 .brand-header {
   color: var(--red);
   font-weight: 800;
-  padding: 14px 16px;
+  padding: 10px 16px;
   text-align: center;
   font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  letter-spacing: 0.5px;
+  font-size: 14px;
+  letter-spacing: 0.4px;
   background: rgba(255, 255, 255, 0.03);
   flex: 0 0 auto;
 }
@@ -166,12 +166,12 @@ button {
 .photo-area {
   width: calc(100% + (var(--card-padding) * 2));
   margin-left: calc(var(--card-padding) * -1);
-  height: clamp(165px, 25vh, 210px);
-  min-height: 165px;
+  height: clamp(172px, 26vh, 205px);
+  min-height: 172px;
   background: #000;
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   overflow: hidden;
   border-bottom: 1px solid color-mix(in srgb, var(--theme-color) 35%, transparent);
@@ -189,7 +189,7 @@ button {
 .photo-area > img,
 .photo-area .photo-panel img.profile-main-image {
   object-fit: cover;
-  object-position: center;
+  object-position: center top;
 }
 
 .photo-area .qr-panel img.profile-qr-image {
@@ -592,14 +592,13 @@ button {
 }
 
 .social-grid {
-  display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
   gap: 8px !important;
   width: 100%;
   overflow: visible !important;
   max-height: none !important;
   height: auto !important;
-  align-items: stretch;
 }
 
 .links-col {
@@ -665,7 +664,8 @@ button {
 
 .social-btn {
   display: inline-flex !important;
-  width: 100%;
+  flex: 0 0 calc((100% - 16px) / 3);
+  max-width: calc((100% - 16px) / 3);
   min-width: 0;
   min-height: 32px;
   white-space: nowrap;
@@ -937,8 +937,8 @@ button {
 .photo-area {
   width: calc(100% + 28px);
   margin-left: -14px;
-  height: clamp(155px, 24vh, 190px);
-  min-height: 155px;
+  height: clamp(165px, 24vh, 198px);
+  min-height: 165px;
 }
 
   .full-name {
