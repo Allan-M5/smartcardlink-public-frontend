@@ -154,11 +154,11 @@ button {
 .brand-header {
   color: var(--red);
   font-weight: 800;
-  padding: 10px 16px;
+  padding: 9px 16px 8px;
   text-align: center;
   font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  letter-spacing: 0.4px;
+  font-size: 13px;
+  letter-spacing: 0.45px;
   background: rgba(255, 255, 255, 0.03);
   flex: 0 0 auto;
 }
@@ -166,8 +166,8 @@ button {
 .photo-area {
   width: calc(100% + (var(--card-padding) * 2));
   margin-left: calc(var(--card-padding) * -1);
-  height: clamp(172px, 26vh, 205px);
-  min-height: 172px;
+  height: clamp(156px, 22vh, 182px);
+  min-height: 156px;
   background: #000;
   position: relative;
   display: flex;
@@ -189,7 +189,7 @@ button {
 .photo-area > img,
 .photo-area .photo-panel img.profile-main-image {
   object-fit: cover;
-  object-position: center top;
+  object-position: center 18%;
 }
 
 .photo-area .qr-panel img.profile-qr-image {
@@ -205,42 +205,43 @@ button {
 
 .personal-info {
   text-align: center;
-  margin-top: 6px;
+  margin-top: 8px;
+  padding-top: 2px;
   flex: 0 0 auto;
 }
 
 .full-name {
   color: var(--theme-color);
-  font-size: clamp(20px, 3.5vw, 23px);
+  font-size: clamp(18px, 3.2vw, 21px);
   font-weight: 700;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
   line-height: 1.08;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .job-name {
   color: #fff;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
-  line-height: 1.05;
+  letter-spacing: 0.45px;
+  line-height: 1.1;
 }
 
 .title-position {
   color: var(--theme-color);
-  font-size: 11px;
+  font-size: 10px;
   font-style: italic;
-  margin-top: 2px;
-  line-height: 1.05;
+  margin-top: 3px;
+  line-height: 1.1;
   opacity: 0.9;
 }
 
 .contact-section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 6px;
+  gap: 7px;
+  margin-top: 8px;
   flex: 0 0 auto;
 }
 
@@ -248,7 +249,7 @@ button {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 215, 0, 0.15);
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 7px 11px;
   transition: border-color 0.2s;
   flex-shrink: 0;
 }
@@ -348,7 +349,7 @@ button {
 .actions-grid {
   display: flex;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 10px;
   flex: 0 0 auto;
 }
 
@@ -394,7 +395,7 @@ button {
 #saveBtn { border-color: #ffa07a; background: rgba(255, 160, 122, 0.6); }
 
 .nav-row {
-  margin-top: 6px;
+  margin-top: 8px;
   padding-top: 0;
   padding-bottom: 0;
   flex: 0 0 auto;
@@ -934,12 +935,17 @@ button {
     padding: 0 14px 14px;
   }
 
-.photo-area {
-  width: calc(100% + 28px);
-  margin-left: -14px;
-  height: clamp(165px, 24vh, 198px);
-  min-height: 165px;
-}
+  .photo-area {
+    width: calc(100% + 28px);
+    margin-left: -14px;
+    height: clamp(150px, 21vh, 176px);
+    min-height: 150px;
+  }
+
+  .photo-area > img,
+  .photo-area .photo-panel img.profile-main-image {
+    object-position: center 14%;
+  }
 
   .full-name {
     font-size: 22px;
