@@ -790,18 +790,6 @@ function wireResumeButtons(client) {
     openModal(sections.resumeAccessModal, inputs.resumeAccess, errors.resumeAccess);
   });
 }
-
-if (buttons.downloadResume) {
-  buttons.downloadResume.onclick = () => {
-    pendingResumeMode = 'download';
-    openModal(sections.resumeAccessModal, inputs.resumeAccess, errors.resumeAccess);
-  };
-}
-
-// ✅ DO NOT CLOSE FUNCTION HERE
-
-}
-
 function buildGoogleCalendarUrl(client) {
   const now = new Date();
   const start = new Date(now.getTime() + 24 * 60 * 60 * 1000);
