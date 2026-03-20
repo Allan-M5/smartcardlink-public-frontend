@@ -11,6 +11,7 @@
   --soft-border: rgba(255, 255, 255, 0.16);
   --muted-text: #d8d8d8;
   --lock-color: #ffbf47;
+  --popup1-grid-gap: 8px;
 }
 
 * {
@@ -181,7 +182,7 @@ button {
 }
 
 /* =========================
-   POPUP 1: REAL STRUCTURE FIX
+   POPUP 1
    ========================= */
 
 #popup1 {
@@ -200,16 +201,16 @@ button {
   min-height: 0;
   height: auto;
   overflow: hidden;
-  padding: 0 14px 8px;
-  gap: 4px;
+  padding: 0 14px 10px;
+  gap: 0;
 }
 
 #popup1 .photo-area {
   width: calc(100% + 28px);
   margin-left: -14px;
-  height: 192px;
-  min-height: 192px;
-  flex: 0 0 192px;
+  height: 178px;
+  min-height: 178px;
+  flex: 0 0 178px;
   background: #000;
   position: relative;
   display: flex;
@@ -220,18 +221,18 @@ button {
 }
 
 .photo-area > img,
-.photo-area .photo-panel img.profile-main-image,
-.photo-area .qr-panel img.profile-qr-image {
+.photo-area .photo-panel img.profile-main-image {
   width: 100%;
   height: 100%;
   display: block;
 }
 
-.photo-area > img,
-.photo-area .photo-panel img.profile-main-image {
-  object-fit: cover;
+#popup1 .photo-area > img,
+#popup1 .photo-area .photo-panel img.profile-main-image {
+  object-fit: contain;
   object-position: center center;
-  transform: scale(1.02);
+  transform: scale(1.03);
+  background: #000;
 }
 
 .photo-area .qr-panel img.profile-qr-image {
@@ -391,8 +392,8 @@ button {
 
 #popup1 .actions-grid {
   display: flex;
-  gap: 8px;
-  margin-top: 5px;
+  gap: var(--popup1-grid-gap);
+  margin-top: var(--popup1-grid-gap);
   flex: 0 0 auto;
 }
 
@@ -400,17 +401,17 @@ button {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--popup1-grid-gap);
 }
 
 .action-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   width: 100%;
   min-height: 34px;
-  padding: 7px 9px;
+  padding: 7px 10px;
   border-radius: 10px;
   border: 1px solid var(--theme-color);
   background: rgba(20, 20, 20, 0.6);
@@ -438,16 +439,16 @@ button {
 #saveBtn { border-color: #ffa07a; background: rgba(255, 160, 122, 0.6); }
 
 #popup1 .nav-row {
-  margin-top: auto;
-  padding-top: 6px;
-  padding-bottom: 6px;
+  margin-top: var(--popup1-grid-gap);
+  padding-top: 0;
+  padding-bottom: 0;
   flex: 0 0 auto;
 }
 
 .more-info-btn {
   width: 100%;
-  min-height: 42px;
-  padding: 9px 14px;
+  min-height: 40px;
+  padding: 8px 14px;
   border-radius: 999px;
   border: 1px solid rgba(255, 215, 0, 0.55);
   background: transparent;
@@ -974,35 +975,45 @@ button {
     max-height: 610px;
   }
 
+  :root {
+    --popup1-grid-gap: 8px;
+  }
+
   #popup1 .card-inner {
     padding: 0 12px 8px;
-    gap: 3px;
+    gap: 0;
   }
 
   #popup1 .photo-area {
     width: calc(100% + 24px);
     margin-left: -12px;
-    height: 172px;
-    min-height: 172px;
-    flex: 0 0 172px;
-    background: #000;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border-bottom: 1px solid color-mix(in srgb, var(--theme-color) 35%, transparent);
+    height: 160px;
+    min-height: 160px;
+    flex: 0 0 160px;
   }
 
   #popup1 .photo-area > img,
   #popup1 .photo-area .photo-panel img.profile-main-image {
-    object-fit: cover;
+    object-fit: contain;
     object-position: center center;
-    transform: scale(1.01);
+    transform: scale(1.02);
+    background: #000;
   }
 
   #popup1 .personal-info {
     margin-top: 5px;
+  }
+
+  .full-name {
+    font-size: 20px;
+  }
+
+  .job-name {
+    font-size: 10px;
+  }
+
+  .title-position {
+    font-size: 9px;
   }
 
   #popup1 .contact-section {
@@ -1010,13 +1021,22 @@ button {
     margin-top: 3px;
   }
 
+  .contact-box {
+    padding: 6px 9px;
+  }
+
+  .contact-label,
+  .contact-primary {
+    font-size: 12px;
+  }
+
   #popup1 .actions-grid {
-    gap: 8px;
-    margin-top: 4px;
+    gap: var(--popup1-grid-gap);
+    margin-top: var(--popup1-grid-gap);
   }
 
   #popup1 .col {
-    gap: 4px;
+    gap: var(--popup1-grid-gap);
   }
 
   .action-btn {
@@ -1026,12 +1046,13 @@ button {
   }
 
   #popup1 .nav-row {
-    margin-top: auto;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    margin-top: var(--popup1-grid-gap);
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   .more-info-btn {
-    min-height: 40px;
+    min-height: 39px;
     padding: 8px 10px;
   }
+}
