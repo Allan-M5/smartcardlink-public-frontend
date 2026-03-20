@@ -791,12 +791,15 @@ function wireResumeButtons(client) {
   });
 }
 
-  if (buttons.downloadResume) {
-    buttons.downloadResume.onclick = () => {
-      pendingResumeMode = 'download';
-      openModal(sections.resumeAccessModal, inputs.resumeAccess, errors.resumeAccess);
-    };
-  }
+if (buttons.downloadResume) {
+  buttons.downloadResume.onclick = () => {
+    pendingResumeMode = 'download';
+    openModal(sections.resumeAccessModal, inputs.resumeAccess, errors.resumeAccess);
+  };
+}
+
+// ✅ DO NOT CLOSE FUNCTION HERE
+
 }
 
 function buildGoogleCalendarUrl(client) {
