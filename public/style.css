@@ -55,7 +55,8 @@ button {
   border-radius: var(--card-radius);
   position: relative;
   z-index: 1;
-  height: 92vh;
+  height: min(92vh, 620px);
+  max-height: 620px;
 }
 
 .vcard::before {
@@ -147,7 +148,6 @@ button {
   gap: 6px;
   min-height: 0;
   height: 100%;
-  flex: 1 1 auto;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
@@ -160,7 +160,6 @@ button {
   gap: 0;
   min-height: 0;
   height: 100%;
-  flex: 1 1 auto;
   overflow: hidden;
 }
 
@@ -181,12 +180,36 @@ button {
   flex: 0 0 auto;
 }
 
-.photo-area {
-  width: calc(100% + (var(--card-padding) * 2));
-  margin-left: calc(var(--card-padding) * -1);
-  height: 220px;
-  min-height: 220px;
-  flex: 0 0 220px;
+/* =========================
+   POPUP 1: REAL STRUCTURE FIX
+   ========================= */
+
+#popup1 {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+#popup1 .brand-header {
+  flex: 0 0 auto;
+}
+
+#popup1 .card-inner {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto;
+  overflow: hidden;
+  padding: 0 14px 10px;
+  gap: 5px;
+}
+
+#popup1 .photo-area {
+  width: calc(100% + 28px);
+  margin-left: -14px;
+  height: 200px;
+  min-height: 200px;
+  flex: 0 0 200px;
   background: #000;
   position: relative;
   display: flex;
@@ -221,7 +244,7 @@ button {
   font-size: 14px;
 }
 
-.personal-info {
+#popup1 .personal-info {
   text-align: center;
   margin-top: 8px;
   padding-top: 0;
@@ -255,11 +278,11 @@ button {
   opacity: 0.9;
 }
 
-.contact-section {
+#popup1 .contact-section {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-top: 6px;
+  margin-top: 5px;
   flex: 0 0 auto;
 }
 
@@ -267,7 +290,7 @@ button {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 215, 0, 0.15);
   border-radius: 8px;
-  padding: 7px 11px;
+  padding: 6px 10px;
   transition: border-color 0.2s;
   flex-shrink: 0;
 }
@@ -365,18 +388,18 @@ button {
   font-style: italic;
 }
 
-.actions-grid {
+#popup1 .actions-grid {
   display: flex;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 6px;
   flex: 0 0 auto;
 }
 
-.col {
+#popup1 .col {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
 }
 
 .action-btn {
@@ -385,13 +408,13 @@ button {
   justify-content: center;
   gap: 6px;
   width: 100%;
-  min-height: 36px;
+  min-height: 34px;
   padding: 7px 9px;
   border-radius: 10px;
   border: 1px solid var(--theme-color);
   background: rgba(20, 20, 20, 0.6);
   color: #fff;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -413,17 +436,17 @@ button {
 #printBtn { border-color: #e5e5ea; background: rgba(229, 229, 234, 0.6); color: #222; }
 #saveBtn { border-color: #ffa07a; background: rgba(255, 160, 122, 0.6); }
 
-.nav-row {
+#popup1 .nav-row {
   margin-top: auto;
   padding-top: 8px;
-  padding-bottom: 10px;
+  padding-bottom: 8px;
   flex: 0 0 auto;
 }
 
 .more-info-btn {
   width: 100%;
-  min-height: 40px;
-  padding: 9px 12px;
+  min-height: 36px;
+  padding: 8px 12px;
   border-radius: 999px;
   border: 1px solid rgba(255, 215, 0, 0.55);
   background: transparent;
@@ -946,29 +969,21 @@ button {
   }
 
   .vcard {
-    height: 92vh;
+    height: min(92vh, 610px);
+    max-height: 610px;
   }
 
-  .popup-surface {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+  #popup1 .card-inner {
+    padding: 0 12px 10px;
+    gap: 4px;
   }
 
-  .popup1-inner {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    min-height: 0;
-    padding: 0 14px 14px;
-  }
-
-  .photo-area {
-    width: calc(100% + 28px);
-    margin-left: -14px;
-    height: 220px;
-    min-height: 220px;
-    flex: 0 0 220px;
+  #popup1 .photo-area {
+    width: calc(100% + 24px);
+    margin-left: -12px;
+    height: 190px;
+    min-height: 190px;
+    flex: 0 0 190px;
   }
 
   .photo-area > img,
@@ -976,25 +991,59 @@ button {
     object-position: center 10%;
   }
 
-  .personal-info {
-    margin-top: 8px;
-  }
-
-  .contact-section {
-    gap: 4px;
-  }
-
-  .actions-grid {
-    gap: 8px;
-    margin-top: 8px;
-  }
-
-  .nav-row {
-    margin-top: auto;
-    padding-bottom: 10px;
+  #popup1 .personal-info {
+    margin-top: 7px;
   }
 
   .full-name {
-    font-size: 22px;
+    font-size: 20px;
+  }
+
+  .job-name {
+    font-size: 10px;
+  }
+
+  .title-position {
+    font-size: 9px;
+  }
+
+  #popup1 .contact-section {
+    gap: 4px;
+    margin-top: 4px;
+  }
+
+  .contact-box {
+    padding: 6px 9px;
+  }
+
+  .contact-label,
+  .contact-primary {
+    font-size: 12px;
+  }
+
+  #popup1 .actions-grid {
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  #popup1 .col {
+    gap: 4px;
+  }
+
+  .action-btn {
+    min-height: 33px;
+    padding: 6px 8px;
+    font-size: 9.5px;
+  }
+
+  #popup1 .nav-row {
+    margin-top: auto;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .more-info-btn {
+    min-height: 35px;
+    padding: 8px 10px;
   }
 }
