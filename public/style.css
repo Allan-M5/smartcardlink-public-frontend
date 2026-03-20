@@ -29,7 +29,8 @@ body {
 }
 
 button,
-a,input {
+a,
+input {
   font: inherit;
 }
 
@@ -83,9 +84,20 @@ button {
 }
 
 @keyframes theme-heartbeat {
-  0% { box-shadow: 0 0 15px 2px var(--theme-color); opacity: 0.4; }
-  50% { box-shadow: 0 0 35px 10px var(--theme-color); transform: scale(1.005); opacity: 0.7; }
-  100% { box-shadow: 0 0 15px 2px var(--theme-color); transform: scale(1); opacity: 0.4; }
+  0% {
+    box-shadow: 0 0 15px 2px var(--theme-color);
+    opacity: 0.4;
+  }
+  50% {
+    box-shadow: 0 0 35px 10px var(--theme-color);
+    transform: scale(1.005);
+    opacity: 0.7;
+  }
+  100% {
+    box-shadow: 0 0 15px 2px var(--theme-color);
+    transform: scale(1);
+    opacity: 0.4;
+  }
 }
 
 .card-surface,
@@ -143,8 +155,10 @@ button {
 
 .popup1-inner {
   padding: 0 var(--card-padding) 12px;
-  gap: 6px;
-  justify-content: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 100%;
 }
 
 .popup2-inner {
@@ -167,12 +181,12 @@ button {
 .photo-area {
   width: calc(100% + (var(--card-padding) * 2));
   margin-left: calc(var(--card-padding) * -1);
-  height: clamp(200px, 29vh, 236px);
-  min-height: 200px;
+  height: clamp(208px, 30vh, 236px);
+  min-height: 208px;
   background: #000;
   position: relative;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   overflow: hidden;
   border-bottom: 1px solid color-mix(in srgb, var(--theme-color) 35%, transparent);
@@ -190,7 +204,7 @@ button {
 .photo-area > img,
 .photo-area .photo-panel img.profile-main-image {
   object-fit: cover;
-  object-position: center 8%;
+  object-position: center 10%;
 }
 
 .photo-area .qr-panel img.profile-qr-image {
@@ -206,7 +220,7 @@ button {
 
 .personal-info {
   text-align: center;
-  margin-top: 5px;
+  margin-top: 6px;
   padding-top: 0;
   flex: 0 0 auto;
 }
@@ -241,7 +255,7 @@ button {
 .contact-section {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
   margin-top: 6px;
   flex: 0 0 auto;
 }
@@ -265,14 +279,15 @@ button {
 .contact-label {
   color: var(--theme-color);
   font-weight: 700;
-  font-size: 14px;
-  width: 60px;
+  font-size: 13px;
+  width: 50px;
+  flex: 0 0 50px;
 }
 
 .contact-primary-wrap {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex: 1;
   justify-content: flex-end;
   min-width: 0;
@@ -280,7 +295,7 @@ button {
 
 .contact-primary {
   color: #fff;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -314,9 +329,9 @@ button {
 }
 
 .box-list {
-  margin-top: 10px;
+  margin-top: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 8px;
+  padding-top: 6px;
 }
 
 .box-list[hidden] {
@@ -326,7 +341,7 @@ button {
 .list-item {
   width: 100%;
   padding: 8px 0;
-  font-size: 14px;
+  font-size: 13px;
   color: #eee;
   cursor: pointer;
   text-align: right;
@@ -350,7 +365,7 @@ button {
 .actions-grid {
   display: flex;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 6px;
   flex: 0 0 auto;
 }
 
@@ -358,7 +373,7 @@ button {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .action-btn {
@@ -396,8 +411,8 @@ button {
 #saveBtn { border-color: #ffa07a; background: rgba(255, 160, 122, 0.6); }
 
 .nav-row {
-  margin-top: 8px;
-  padding-top: 0;
+  margin-top: auto;
+  padding-top: 8px;
   padding-bottom: 0;
   flex: 0 0 auto;
 }
@@ -936,16 +951,16 @@ button {
     padding: 0 14px 14px;
   }
 
-.photo-area {
-  width: calc(100% + 28px);
-  margin-left: -14px;
-  height: clamp(182px, 25vh, 206px);
-  min-height: 182px;
-}
+  .photo-area {
+    width: calc(100% + 28px);
+    margin-left: -14px;
+    height: clamp(188px, 27vh, 214px);
+    min-height: 188px;
+  }
 
   .photo-area > img,
   .photo-area .photo-panel img.profile-main-image {
-    object-position: center 7%;
+    object-position: center 8%;
   }
 
   .full-name {
