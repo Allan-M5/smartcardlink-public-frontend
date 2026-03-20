@@ -200,16 +200,16 @@ button {
   min-height: 0;
   height: auto;
   overflow: hidden;
-  padding: 0 14px 10px;
-  gap: 5px;
+  padding: 0 14px 8px;
+  gap: 4px;
 }
 
 #popup1 .photo-area {
   width: calc(100% + 28px);
   margin-left: -14px;
-  height: 200px;
-  min-height: 200px;
-  flex: 0 0 200px;
+  height: 192px;
+  min-height: 192px;
+  flex: 0 0 192px;
   background: #000;
   position: relative;
   display: flex;
@@ -230,7 +230,8 @@ button {
 .photo-area > img,
 .photo-area .photo-panel img.profile-main-image {
   object-fit: cover;
-  object-position: center 10%;
+  object-position: center center;
+  transform: scale(1.02);
 }
 
 .photo-area .qr-panel img.profile-qr-image {
@@ -246,7 +247,7 @@ button {
 
 #popup1 .personal-info {
   text-align: center;
-  margin-top: 8px;
+  margin-top: 6px;
   padding-top: 0;
   flex: 0 0 auto;
 }
@@ -282,7 +283,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-top: 5px;
+  margin-top: 4px;
   flex: 0 0 auto;
 }
 
@@ -391,7 +392,7 @@ button {
 #popup1 .actions-grid {
   display: flex;
   gap: 8px;
-  margin-top: 6px;
+  margin-top: 5px;
   flex: 0 0 auto;
 }
 
@@ -438,15 +439,15 @@ button {
 
 #popup1 .nav-row {
   margin-top: auto;
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding-top: 6px;
+  padding-bottom: 6px;
   flex: 0 0 auto;
 }
 
 .more-info-btn {
   width: 100%;
-  min-height: 36px;
-  padding: 8px 12px;
+  min-height: 42px;
+  padding: 9px 14px;
   border-radius: 999px;
   border: 1px solid rgba(255, 215, 0, 0.55);
   background: transparent;
@@ -974,56 +975,44 @@ button {
   }
 
   #popup1 .card-inner {
-    padding: 0 12px 10px;
-    gap: 4px;
+    padding: 0 12px 8px;
+    gap: 3px;
   }
 
   #popup1 .photo-area {
     width: calc(100% + 24px);
     margin-left: -12px;
-    height: 190px;
-    min-height: 190px;
-    flex: 0 0 190px;
+    height: 172px;
+    min-height: 172px;
+    flex: 0 0 172px;
+    background: #000;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-bottom: 1px solid color-mix(in srgb, var(--theme-color) 35%, transparent);
   }
 
-  .photo-area > img,
-  .photo-area .photo-panel img.profile-main-image {
-    object-position: center 10%;
+  #popup1 .photo-area > img,
+  #popup1 .photo-area .photo-panel img.profile-main-image {
+    object-fit: cover;
+    object-position: center center;
+    transform: scale(1.01);
   }
 
   #popup1 .personal-info {
-    margin-top: 7px;
-  }
-
-  .full-name {
-    font-size: 20px;
-  }
-
-  .job-name {
-    font-size: 10px;
-  }
-
-  .title-position {
-    font-size: 9px;
+    margin-top: 5px;
   }
 
   #popup1 .contact-section {
     gap: 4px;
-    margin-top: 4px;
-  }
-
-  .contact-box {
-    padding: 6px 9px;
-  }
-
-  .contact-label,
-  .contact-primary {
-    font-size: 12px;
+    margin-top: 3px;
   }
 
   #popup1 .actions-grid {
     gap: 8px;
-    margin-top: 6px;
+    margin-top: 4px;
   }
 
   #popup1 .col {
@@ -1031,19 +1020,18 @@ button {
   }
 
   .action-btn {
-    min-height: 33px;
+    min-height: 32px;
     padding: 6px 8px;
     font-size: 9.5px;
   }
 
   #popup1 .nav-row {
     margin-top: auto;
-    padding-top: 8px;
-    padding-bottom: 8px;
+    padding-top: 5px;
+    padding-bottom: 5px;
   }
 
   .more-info-btn {
-    min-height: 35px;
+    min-height: 40px;
     padding: 8px 10px;
   }
-}
