@@ -144,6 +144,7 @@ button {
 .popup1-inner {
   padding: 0 var(--card-padding) 12px;
   gap: 6px;
+  justify-content: flex-start;
 }
 
 .popup2-inner {
@@ -166,8 +167,8 @@ button {
 .photo-area {
   width: calc(100% + (var(--card-padding) * 2));
   margin-left: calc(var(--card-padding) * -1);
-  height: clamp(156px, 22vh, 182px);
-  min-height: 156px;
+  height: clamp(200px, 29vh, 236px);
+  min-height: 200px;
   background: #000;
   position: relative;
   display: flex;
@@ -189,7 +190,7 @@ button {
 .photo-area > img,
 .photo-area .photo-panel img.profile-main-image {
   object-fit: cover;
-  object-position: center 18%;
+  object-position: center 8%;
 }
 
 .photo-area .qr-panel img.profile-qr-image {
@@ -205,8 +206,8 @@ button {
 
 .personal-info {
   text-align: center;
-  margin-top: 8px;
-  padding-top: 2px;
+  margin-top: 5px;
+  padding-top: 0;
   flex: 0 0 auto;
 }
 
@@ -240,8 +241,8 @@ button {
 .contact-section {
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  margin-top: 8px;
+  gap: 6px;
+  margin-top: 6px;
   flex: 0 0 auto;
 }
 
@@ -349,7 +350,7 @@ button {
 .actions-grid {
   display: flex;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 8px;
   flex: 0 0 auto;
 }
 
@@ -935,16 +936,16 @@ button {
     padding: 0 14px 14px;
   }
 
-  .photo-area {
-    width: calc(100% + 28px);
-    margin-left: -14px;
-    height: clamp(150px, 21vh, 176px);
-    min-height: 150px;
-  }
+.photo-area {
+  width: calc(100% + 28px);
+  margin-left: -14px;
+  height: clamp(182px, 25vh, 206px);
+  min-height: 182px;
+}
 
   .photo-area > img,
   .photo-area .photo-panel img.profile-main-image {
-    object-position: center 14%;
+    object-position: center 7%;
   }
 
   .full-name {
