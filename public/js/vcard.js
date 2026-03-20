@@ -284,10 +284,22 @@ function forceClick(selector, handler) {
       qrLoaded = true;
     }
 
+    function restartSwipeHintAnimation() {
+      if (!swipeHint) return;
+      swipeHint.classList.remove('animate');
+      void swipeHint.offsetWidth;
+      swipeHint.classList.add('animate');
+    }
+
     function updateView() {
       if (!track) return;
       track.style.transform = showingQR ? 'translateX(-50%)' : 'translateX(0)';
-      if (swipeHint) swipeHint.textContent = showingQR ? 'Swipe to view Photo' : 'Swipe to view QR';
+
+      if (swipeHint) {
+        swipeHint.textContent = showingQR ? 'Swipe to view Photo' : 'Swipe to view QR';
+        restartSwipeHintAnimation();
+      }
+
       if (showingQR) ensureQrLoaded();
     }
 

@@ -830,8 +830,37 @@ button {
   background: rgba(0, 0, 0, 0.55);
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.16);
+  opacity: 0;
+  animation: swipeHintBreath 4s ease-in-out infinite;
+  will-change: opacity, transform;
 }
 
+.swipe-hint.animate {
+  animation: swipeHintBreath 4s ease-in-out infinite;
+}
+
+@keyframes swipeHintBreath {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.96);
+  }
+  18% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.02);
+  }
+  82% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.98);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.96);
+  }
+}
 .photo-fullscreen {
   position: fixed;
   inset: 0;
