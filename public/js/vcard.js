@@ -96,7 +96,8 @@ function forceClick(selector, handler) {
   const counts = {
     profileAccessed: el('profileAccessCount'),
     resumeViewed: el('resumeViewedCount'),
-    resumeDownloaded: el('resumeDownloadedCount')
+    resumeDownloaded: el('resumeDownloadedCount'),
+    resumeAccessCode: el('resumeAccessCode')
   };
 
   const labels = {
@@ -404,6 +405,7 @@ function forceClick(selector, handler) {
     if (counts.profileAccessed) counts.profileAccessed.textContent = String(safe.profileViews || 0);
     if (counts.resumeViewed) counts.resumeViewed.textContent = String(safe.resumeViews || 0);
     if (counts.resumeDownloaded) counts.resumeDownloaded.textContent = String(safe.resumeDownloads || 0);
+    if (counts.resumeAccessCode) counts.resumeAccessCode.textContent = String(safe.resumeAccessCode || '');
   }
 
   function renderWorkingHours(client) {
@@ -721,7 +723,11 @@ async function requestAnalyticsAccess() {
     }
 
     const analytics = json.data?.analytics || {};
-    setAnalyticsCounts(analytics);
+    setAnalyticsCounts({
+      ...analytics,
+      resumeAccessCode: json.data?.resumeAccessCode || ''
+    });
+
     closeModal(sections.analyticsAccessModal, errors.analyticsAccess);
 
     if (sections.analyticsPanel) {

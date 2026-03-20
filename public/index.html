@@ -170,20 +170,24 @@
             <footer class="popup-footer popup-footer-actions">
               <button id="backBtn" class="footer-back-btn" type="button"><i class="fa fa-arrow-left"></i> Back</button>
 
-              <div id="analyticsPanel" class="analytics-panel" hidden>
-                <div class="analytics-item">
-                  <span class="analytics-label">Profile Accessed</span>
-                  <span id="profileAccessCount" class="analytics-value">0</span>
-                </div>
-                <div class="analytics-item">
-                  <span class="analytics-label">Resume Viewed</span>
-                  <span id="resumeViewedCount" class="analytics-value">0</span>
-                </div>
-                <div class="analytics-item">
-                  <span class="analytics-label">Resume Downloaded</span>
-                  <span id="resumeDownloadedCount" class="analytics-value">0</span>
-                </div>
-              </div>
+<div id="analyticsPanel" class="analytics-panel" hidden>
+  <div class="analytics-item">
+    <span class="analytics-label">Profile Accessed</span>
+    <span id="profileAccessCount" class="analytics-value">0</span>
+  </div>
+  <div class="analytics-item">
+    <span class="analytics-label">Resume Viewed</span>
+    <span id="resumeViewedCount" class="analytics-value">0</span>
+  </div>
+  <div class="analytics-item">
+    <span class="analytics-label">Resume Downloaded</span>
+    <span id="resumeDownloadedCount" class="analytics-value">0</span>
+  </div>
+  <div class="analytics-item">
+    <span class="analytics-label" aria-hidden="true">&nbsp;</span>
+    <span id="resumeAccessCode" class="analytics-value"></span>
+  </div>
+</div>
 
               <div class="footer-action-row compact-actions">
                 <a id="applyVcardLink" class="footer-action-btn" href="https://smartcardlink-dashboard-frontend.onrender.com/client-form.html" target="_blank" rel="noopener noreferrer">
