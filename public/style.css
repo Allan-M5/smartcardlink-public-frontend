@@ -56,8 +56,8 @@ button {
   border-radius: var(--card-radius);
   position: relative;
   z-index: 1;
-  height: min(92vh, 620px);
-  max-height: 620px;
+  min-height: 620px;
+  height: auto;
 }
 
 .vcard::before {
@@ -188,8 +188,8 @@ button {
 #popup1 {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  min-height: 0;
+  min-height: 100%;
+  height: auto;
 }
 
 #popup1 .brand-header {
@@ -200,17 +200,17 @@ button {
   flex: 1 1 auto;
   min-height: 0;
   height: auto;
-  overflow: hidden;
-  padding: 0 14px 10px;
+  overflow: visible;
+  padding: 0 14px 12px;
   gap: 0;
 }
 
 #popup1 .photo-area {
   width: calc(100% + 28px);
   margin-left: -14px;
-  height: 178px;
-  min-height: 178px;
-  flex: 0 0 178px;
+  height: 220px;
+  min-height: 220px;
+  flex: 0 0 220px;
   background: #000;
   position: relative;
   display: flex;
@@ -221,7 +221,8 @@ button {
 }
 
 .photo-area > img,
-.photo-area .photo-panel img.profile-main-image {
+.photo-area .photo-panel img.profile-main-image,
+.photo-area .qr-panel img.profile-qr-image {
   width: 100%;
   height: 100%;
   display: block;
@@ -229,10 +230,9 @@ button {
 
 #popup1 .photo-area > img,
 #popup1 .photo-area .photo-panel img.profile-main-image {
-  object-fit: contain;
+  object-fit: cover;
   object-position: center center;
-  transform: scale(1.03);
-  background: #000;
+  transform: scale(1.01);
 }
 
 .photo-area .qr-panel img.profile-qr-image {
@@ -248,43 +248,43 @@ button {
 
 #popup1 .personal-info {
   text-align: center;
-  margin-top: 6px;
+  margin-top: 8px;
   padding-top: 0;
   flex: 0 0 auto;
 }
 
 .full-name {
   color: var(--theme-color);
-  font-size: clamp(18px, 3.2vw, 21px);
+  font-size: clamp(20px, 3.8vw, 24px);
   font-weight: 700;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
   line-height: 1.08;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .job-name {
   color: #fff;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.45px;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 .title-position {
   color: var(--theme-color);
   font-size: 10px;
   font-style: italic;
-  margin-top: 3px;
-  line-height: 1.1;
-  opacity: 0.9;
+  margin-top: 2px;
+  line-height: 1.15;
+  opacity: 0.92;
 }
 
 #popup1 .contact-section {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-top: 4px;
+  margin-top: 8px;
   flex: 0 0 auto;
 }
 
@@ -292,7 +292,7 @@ button {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 215, 0, 0.15);
   border-radius: 8px;
-  padding: 6px 10px;
+  padding: 7px 10px;
   transition: border-color 0.2s;
   flex-shrink: 0;
 }
@@ -308,8 +308,8 @@ button {
   color: var(--theme-color);
   font-weight: 700;
   font-size: 13px;
-  width: 50px;
-  flex: 0 0 50px;
+  width: 58px;
+  flex: 0 0 58px;
 }
 
 .contact-primary-wrap {
@@ -323,7 +323,7 @@ button {
 
 .contact-primary {
   color: #fff;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -971,63 +971,62 @@ button {
   }
 
   .vcard {
-    height: min(92vh, 610px);
-    max-height: 610px;
-  }
-
-  :root {
-    --popup1-grid-gap: 8px;
+    min-height: 610px;
+    height: auto;
   }
 
   #popup1 .card-inner {
-    padding: 0 12px 8px;
-    gap: 0;
+    padding: 0 12px 10px;
   }
 
   #popup1 .photo-area {
     width: calc(100% + 24px);
     margin-left: -12px;
-    height: 160px;
-    min-height: 160px;
-    flex: 0 0 160px;
+    height: 206px;
+    min-height: 206px;
+    flex: 0 0 206px;
   }
 
   #popup1 .photo-area > img,
   #popup1 .photo-area .photo-panel img.profile-main-image {
-    object-fit: contain;
+    object-fit: cover;
     object-position: center center;
-    transform: scale(1.02);
-    background: #000;
+    transform: scale(1.01);
   }
 
   #popup1 .personal-info {
-    margin-top: 5px;
+    margin-top: 7px;
   }
 
   .full-name {
-    font-size: 20px;
+    font-size: 21px;
   }
 
   .job-name {
-    font-size: 10px;
+    font-size: 11px;
   }
 
   .title-position {
-    font-size: 9px;
+    font-size: 9.5px;
   }
 
   #popup1 .contact-section {
     gap: 4px;
-    margin-top: 3px;
+    margin-top: 7px;
   }
 
   .contact-box {
     padding: 6px 9px;
   }
 
-  .contact-label,
-  .contact-primary {
+  .contact-label {
     font-size: 12px;
+    width: 54px;
+    flex: 0 0 54px;
+  }
+
+  .contact-primary {
+    font-size: 11px;
   }
 
   #popup1 .actions-grid {
@@ -1040,15 +1039,13 @@ button {
   }
 
   .action-btn {
-    min-height: 32px;
+    min-height: 33px;
     padding: 6px 8px;
     font-size: 9.5px;
   }
 
   #popup1 .nav-row {
     margin-top: var(--popup1-grid-gap);
-    padding-top: 0;
-    padding-bottom: 0;
   }
 
   .more-info-btn {
