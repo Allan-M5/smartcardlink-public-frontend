@@ -650,7 +650,7 @@ async function requestResumeAccess(mode) {
     return;
   }
 
-  const previewTab = mode === 'view' ? window.open('', '_blank') : null;
+    const previewTab = null;
 
   try {
     showError(errors.resumeAccess, '');
@@ -682,16 +682,10 @@ async function requestResumeAccess(mode) {
       a.click();
       document.body.removeChild(a);
     } else {
-      if (previewTab) {
-        previewTab.location.href = payload.fileUrl;
-      } else {
-        window.open(payload.fileUrl, '_blank', 'noopener,noreferrer');
-      }
+      window.open(payload.fileUrl, '_blank', 'noopener,noreferrer');
     }
   } catch (error) {
-    if (previewTab && !previewTab.closed) {
-      previewTab.close();
-    }
+
     showError(errors.resumeAccess, error.message || 'Resume access denied.');
   }
 }
