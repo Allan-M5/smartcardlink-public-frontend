@@ -545,7 +545,7 @@ function renderPackageUI(client) {
   }
 }
 
-function buildReminderGoogleCalendarUrl(client, selectedDateTime) {
+function buildReminderIcs(client, selectedDateTime) {
   const chosen = selectedDateTime ? new Date(selectedDateTime) : new Date(Date.now() + 24 * 60 * 60 * 1000);
 
   if (Number.isNaN(chosen.getTime())) {
@@ -555,7 +555,7 @@ function buildReminderGoogleCalendarUrl(client, selectedDateTime) {
   const start = new Date(chosen);
   const end = new Date(start.getTime() + 30 * 60 * 1000);
 
-  const toCalendarUtcStamp = (value) => {
+  const toUtcStamp = (value) => {
     const yyyy = value.getUTCFullYear();
     const mm = String(value.getUTCMonth() + 1).padStart(2, '0');
     const dd = String(value.getUTCDate()).padStart(2, '0');
@@ -566,23 +566,32 @@ function buildReminderGoogleCalendarUrl(client, selectedDateTime) {
   };
 
   const title = `Reminder to contact ${client.fullName || 'Profile Owner'}`;
-  const details = [
+  const description = [
     `Remember to contact ${client.fullName || 'this profile owner'}.`,
     client.title ? `Title: ${client.title}` : '',
     client.company ? `Company: ${client.company}` : '',
     client.phone1 ? `Phone: ${client.phone1}` : '',
     client.email1 ? `Email: ${client.email1}` : '',
     window.location.href ? `Profile: ${window.location.href}` : ''
-  ].filter(Boolean).join('\n');
+  ].filter(Boolean).join('\\n');
 
-  const params = new URLSearchParams({
-    action: 'TEMPLATE',
-    text: title,
-    details,
-    dates: `${toCalendarUtcStamp(start)}/${toCalendarUtcStamp(end)}`
-  });
-
-  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+  return `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//SmartCardLink//Reminder//EN
+BEGIN:VEVENT
+UID:${Date.now()}@smartcardlink
+DTSTAMP:${toUtcStamp(new Date())}
+DTSTART:${toUtcStamp(start)}
+DTEND:${toUtcStamp(end)}
+SUMMARY:${title}
+DESCRIPTION:${description}
+BEGIN:VALARM
+TRIGGER:-PT10M
+ACTION:DISPLAY
+DESCRIPTION:${title}
+END:VALARM
+END:VEVENT
+END:VCALENDAR`;
 }
 
 function openReminderPicker(client) {
@@ -595,7 +604,7 @@ function openReminderPicker(client) {
       <input type="datetime-local" class="access-input" id="reminderDateTimeInput">
       <div class="access-actions">
         <button type="button" class="access-btn secondary" id="reminderCancelBtn">Cancel</button>
-        <button type="button" class="access-btn" id="reminderConfirmBtn">Open Google Calendar</button>
+        <button type="button" class="access-btn" id="reminderConfirmBtn">Add Reminder</button>
       </div>
     </div>
   `;
@@ -621,13 +630,20 @@ function openReminderPicker(client) {
 
   confirmBtn.onclick = () => {
     try {
-      const calendarUrl = buildReminderGoogleCalendarUrl(client, input.value);
-      overlay.remove();
+      const ics = buildReminderIcs(client, input.value);
+      const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
 
-      const win = window.open(calendarUrl, '_blank', 'noopener,noreferrer');
-      if (!win) {
-        window.location.href = calendarUrl;
-      }
+      a.href = url;
+      a.download = `contact-${(client.fullName || 'profile-owner').toLowerCase().replace(/\\s+/g, '-')}-reminder.ics`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      window.setTimeout(() => URL.revokeObjectURL(url), 3000);
+      overlay.remove();
+      showToast('Reminder file opened. Save it in your phone calendar to enable alerts.');
     } catch (error) {
       showToast('Invalid reminder date/time', true);
     }
