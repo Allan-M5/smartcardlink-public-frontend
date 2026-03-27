@@ -48,9 +48,6 @@
   }
 
   body.overlay-active .form-card {
-    filter: blur(4px);
-    transform: scale(0.988);
-    opacity: 0.45;
     pointer-events: none;
     user-select: none;
   }
@@ -58,9 +55,9 @@
   .theme-popup-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
     z-index: 10000;
     display: none;
     align-items: center;
@@ -422,12 +419,12 @@
     overflow-y: auto;
     display: none;
     border: 1px solid rgba(216,180,254,0.32);
-    background: linear-gradient(135deg, rgba(216,180,254,0.10), rgba(17,17,17,0.98));
+    background: #121212;
     border-radius: 1rem;
     padding: 1rem;
     box-shadow:
-      inset 0 0 0 1px rgba(255,255,255,0.02),
-      0 22px 60px rgba(0,0,0,0.45);
+      0 22px 60px rgba(0,0,0,0.45),
+      inset 0 0 0 1px rgba(255,255,255,0.03);
     position: relative;
     z-index: 10001;
 }
@@ -1444,11 +1441,18 @@ function showOrHideThemeConfig(packageType) {
     return;
   }
 
-  const currentHex = normalizeHex(themeColorInput?.value) || normalizeHex(themeHex?.value) || "#FFD700";
+  const currentHex =
+    normalizeHex(themeColorInput?.value) ||
+    normalizeHex(themeHex?.value) ||
+    "#FFD700";
+
   pendingThemeColor = currentHex;
   syncThemeUi(currentHex);
   updateThemeConfirmButton();
-  openThemePopup();
+
+  requestAnimationFrame(() => {
+    openThemePopup();
+  });
 }
 
 let copyToastTimer = null;
@@ -1585,34 +1589,54 @@ const themeCloseBtn = document.getElementById("themeCloseBtn");
 if (themeConfirmBtn) {
   themeConfirmBtn.addEventListener("click", () => {
     const finalHex = normalizeHex(pendingThemeColor) || "#FFD700";
+
     confirmedThemeColor = finalHex;
 
     if (themeColorInput) themeColorInput.value = finalHex;
     if (themeHex) themeHex.value = finalHex;
+
     syncThemeUi(finalHex);
     updateThemeConfirmButton();
-    closeThemePopup();
+
+    setTimeout(() => {
+      closeThemePopup();
+    }, 60);
   });
 }
 
 if (themeCloseBtn) {
   themeCloseBtn.addEventListener("click", () => {
-    const revertHex = normalizeHex(confirmedThemeColor) || normalizeHex(themeColorInput?.value) || "#FFD700";
+    const revertHex =
+      normalizeHex(confirmedThemeColor) ||
+      normalizeHex(themeColorInput?.value) ||
+      "#FFD700";
+
     pendingThemeColor = revertHex;
     syncThemeUi(revertHex);
     updateThemeConfirmButton();
-    closeThemePopup();
+
+    setTimeout(() => {
+      closeThemePopup();
+    }, 60);
   });
 }
 
 if (themePopupBackdrop) {
   themePopupBackdrop.addEventListener("click", (event) => {
     if (event.target !== themePopupBackdrop) return;
-    const revertHex = normalizeHex(confirmedThemeColor) || normalizeHex(themeColorInput?.value) || "#FFD700";
+
+    const revertHex =
+      normalizeHex(confirmedThemeColor) ||
+      normalizeHex(themeColorInput?.value) ||
+      "#FFD700";
+
     pendingThemeColor = revertHex;
     syncThemeUi(revertHex);
     updateThemeConfirmButton();
-    closeThemePopup();
+
+    setTimeout(() => {
+      closeThemePopup();
+    }, 60);
   });
 }
 
