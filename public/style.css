@@ -1000,8 +1000,9 @@ button {
   }
 
   .vcard {
-    min-height: 610px;
-    height: auto;
+    min-height: 90vh;
+    height: 90vh;
+    max-height: 90vh;
   }
 
   #popup1 .card-inner {
@@ -1011,9 +1012,9 @@ button {
   #popup1 .photo-area {
     width: calc(100% + 24px);
     margin-left: -12px;
-    height: 206px;
-    min-height: 206px;
-    flex: 0 0 206px;
+    height: clamp(280px, 38vh, 340px);
+    min-height: clamp(280px, 38vh, 340px);
+    flex: 0 0 clamp(280px, 38vh, 340px);
   }
 
   #popup1 .photo-area > img,
@@ -1040,12 +1041,12 @@ button {
   }
 
   #popup1 .contact-section {
-    gap: 4px;
-    margin-top: 7px;
+    gap: 6px;
+    margin-top: 10px;
   }
 
   .contact-box {
-    padding: 6px 9px;
+    padding: 7px 9px;
   }
 
   .contact-label {
@@ -1059,8 +1060,8 @@ button {
   }
 
   #popup1 .actions-grid {
-    gap: var(--popup1-grid-gap);
-    margin-top: var(--popup1-grid-gap);
+    gap: 8px;
+    margin-top: 10px;
   }
 
   #popup1 .col {
@@ -1074,7 +1075,7 @@ button {
   }
 
   #popup1 .nav-row {
-    margin-top: var(--popup1-grid-gap);
+    margin-top: 10px;
   }
 
   .more-info-btn {
