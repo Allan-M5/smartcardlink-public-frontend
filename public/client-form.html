@@ -69,6 +69,63 @@
     display: flex;
   }
 
+body.theme-popup-open {
+  overflow: hidden;
+}
+
+.theme-selection-status {
+  margin-top: 1rem;
+  border: 1px solid rgba(216,180,254,0.28);
+  background: linear-gradient(135deg, rgba(216,180,254,0.10), rgba(17,17,17,0.96));
+  border-radius: 1rem;
+  padding: 0.95rem 1rem;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.02),
+    0 12px 28px rgba(0,0,0,0.18);
+}
+
+.theme-selection-status[hidden] {
+  display: none !important;
+}
+
+.theme-selection-status-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(216,180,254,0.92);
+  margin-bottom: 0.4rem;
+}
+
+.theme-selection-status-value {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.theme-selection-status-swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.22);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.03);
+  flex: 0 0 18px;
+  background: #FFD700;
+}
+
+.theme-selection-edit-btn {
+  margin-top: 0.8rem;
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid rgba(216,180,254,0.24);
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+  font-weight: 800;
+}
+
   h1.title {
     color: #FFD700;
     text-align: center;
@@ -1113,6 +1170,17 @@
       <div class="theme-config-wrap" id="themeConfigWrap" role="dialog" aria-modal="true" aria-hidden="true">
        </div>
 
+<input type="hidden" name="themeColor" id="themeColor" value="" />
+
+<div class="theme-selection-status" id="themeSelectionStatus" hidden>
+  <div class="theme-selection-status-label">PRO Theme Selected</div>
+  <div class="theme-selection-status-value">
+    <span class="theme-selection-status-swatch" id="themeSelectionStatusSwatch"></span>
+    <span id="themeSelectionStatusText">Royal Gold — #FFD700</span>
+  </div>
+  <button type="button" class="theme-selection-edit-btn" id="editThemeBtn">Edit Theme</button>
+</div>
+
        <div class="theme-popup-actions">
   <button type="button" id="themeConfirmBtn" class="theme-popup-btn">
     Select Theme Color
@@ -1201,7 +1269,7 @@
     <h2 class="submission-title" id="submissionTitle">Details Successfully Submitted</h2>
 <div class="submission-id" id="submissionRecordId">Submission ID: --</div>
 <p class="submission-text" id="submissionText">Your information has been received successfully.</p>
-<p class="submission-copy-guide" id="submissionCopyGuide">Tap the Amount or Mpesa button below to copy payment details quickly.</p>
+<p class="submission-copy-guide" id="submissionCopyGuide">Tap the Amount or Mpesa Number below to copy payment details quickly.</p>
 
 <div class="payment-summary-card" id="paymentSummaryCard">
   <div class="payment-summary-row">
@@ -1257,6 +1325,7 @@ const themeColorInput = document.getElementById("themeColor");
 const themePreviewSwatch = document.getElementById("themePreviewSwatch");
 const themePreviewName = document.getElementById("themePreviewName");
 const themePreviewHex = document.getElementById("themePreviewHex");
+
 
 const paymentSummaryPackage = document.getElementById("paymentSummaryPackage");
 const paymentSummaryAmountBtn = document.getElementById("paymentSummaryAmountBtn");
@@ -1808,7 +1877,7 @@ function showSuccessProcessingSequence(recordId, packageType, btn) {
   submissionText.textContent = "Thank you for choosing SmartCardLink vCard services. Your vCard is being processed.";
 
   if (submissionCopyGuide) {
-    submissionCopyGuide.textContent = "Tap the Amount or Mpesa button below to copy the payment details directly, then paste when making payment.";
+    submissionCopyGuide.textContent = "Tap the Amount or Mpesa Number below to copy the payment details directly, then paste when making payment.";
     submissionCopyGuide.style.display = "block";
   }
 
@@ -1837,7 +1906,7 @@ if (applyAnotherBtn) {
     syncThemeUi("#FFD700");
     showOrHideThemeConfig("");
     if (submissionCopyGuide) {
-      submissionCopyGuide.textContent = "Tap the Amount or Mpesa button below to copy payment details quickly.";
+      submissionCopyGuide.textContent = "Tap the Amount or Mpesa Number below to copy payment details quickly.";
       submissionCopyGuide.style.display = "block";
     }
     document.getElementById("fullName")?.focus();
