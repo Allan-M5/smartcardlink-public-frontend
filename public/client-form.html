@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -533,20 +533,26 @@ body.theme-popup-open {
 }
 
 .theme-popup-btn {
-    transition: transform 0.12s ease, box-shadow 0.2s ease;
-}
-.theme-popup-btn:active {
-    transform: scale(0.96);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3) inset;
-
     width: auto;
     min-width: 190px;
     margin-top: 0;
     padding: 0.82rem 1rem;
     border-radius: 999px;
     font-weight: 800;
+    transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
+.theme-popup-btn:active {
+    transform: scale(0.96);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3) inset;
+}
+
+.theme-popup-btn.saved-state {
+    background: linear-gradient(135deg, rgba(16,185,129,0.95), rgba(34,197,94,0.92));
+    color: #ffffff;
+    border: 1px solid rgba(134,239,172,0.65);
+    box-shadow: 0 10px 24px rgba(16,185,129,0.28);
+}
 .theme-popup-btn.secondary {
     background: rgba(255,255,255,0.08);
     color: #fff;
@@ -694,15 +700,15 @@ body.theme-popup-open {
     }
 
     .theme-popup-btn {
-    transition: transform 0.12s ease, box-shadow 0.2s ease;
-}
-.theme-popup-btn:active {
-    transform: scale(0.96);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3) inset;
-
       width: 100%;
       min-width: 0;
     }
+.theme-popup-btn.saved-state {
+    background: linear-gradient(135deg, rgba(16,185,129,0.95), rgba(34,197,94,0.92));
+    color: #ffffff;
+    border: 1px solid rgba(134,239,172,0.65);
+    box-shadow: 0 10px 24px rgba(16,185,129,0.28);
+}
 }
 
   .form-message {
@@ -1226,7 +1232,7 @@ body.theme-popup-open {
       <div class="theme-selection-status-label">PRO Theme Selected</div>
       <div class="theme-selection-status-value">
         <span class="theme-selection-status-swatch" id="themeSelectionStatusSwatch"></span>
-        <span id="themeSelectionStatusText">Royal Gold — #FFD700</span>
+        <span id="themeSelectionStatusText">Royal Gold â€” #FFD700</span>
       </div>
       <button type="button" class="theme-selection-edit-btn" id="editThemeBtn">Edit Theme</button>
     </div>
@@ -1244,26 +1250,26 @@ body.theme-popup-open {
               <label for="themePreset">Luxury Theme Preset</label>
               <select id="themePreset" autocomplete="off">
                 <option value="">Select a luxury theme</option>
-                <option value="#FFD700">Royal Gold — #FFD700</option>
-                <option value="#D4AF37">Champagne Gold — #D4AF37</option>
-                <option value="#C5A46D">Desert Gold — #C5A46D</option>
-                <option value="#B76E79">Rose Gold — #B76E79</option>
-                <option value="#C08081">Blush Copper — #C08081</option>
-                <option value="#CD7F32">Burnished Bronze — #CD7F32</option>
-                <option value="#8B4513">Saddle Bronze — #8B4513</option>
-                <option value="#7E4830">Espresso Copper — #7E4830</option>
-                <option value="#50C878">Emerald Green — #50C878</option>
-                <option value="#0F8B8D">Deep Teal Luxe — #0F8B8D</option>
-                <option value="#0047AB">Royal Blue — #0047AB</option>
-                <option value="#1338BE">Imperial Blue — #1338BE</option>
-                <option value="#1E3A8A">Midnight Sapphire — #1E3A8A</option>
-                <option value="#4B0082">Royal Indigo — #4B0082</option>
-                <option value="#6A0DAD">Majestic Purple — #6A0DAD</option>
-                <option value="#800020">Burgundy Velvet — #800020</option>
-                <option value="#8B0000">Crimson Elite — #8B0000</option>
-                <option value="#36454F">Charcoal Titanium — #36454F</option>
-                <option value="#2F4F4F">Graphite Slate — #2F4F4F</option>
-                <option value="#111827">Obsidian Black — #111827</option>
+                <option value="#FFD700">Royal Gold â€” #FFD700</option>
+                <option value="#D4AF37">Champagne Gold â€” #D4AF37</option>
+                <option value="#C5A46D">Desert Gold â€” #C5A46D</option>
+                <option value="#B76E79">Rose Gold â€” #B76E79</option>
+                <option value="#C08081">Blush Copper â€” #C08081</option>
+                <option value="#CD7F32">Burnished Bronze â€” #CD7F32</option>
+                <option value="#8B4513">Saddle Bronze â€” #8B4513</option>
+                <option value="#7E4830">Espresso Copper â€” #7E4830</option>
+                <option value="#50C878">Emerald Green â€” #50C878</option>
+                <option value="#0F8B8D">Deep Teal Luxe â€” #0F8B8D</option>
+                <option value="#0047AB">Royal Blue â€” #0047AB</option>
+                <option value="#1338BE">Imperial Blue â€” #1338BE</option>
+                <option value="#1E3A8A">Midnight Sapphire â€” #1E3A8A</option>
+                <option value="#4B0082">Royal Indigo â€” #4B0082</option>
+                <option value="#6A0DAD">Majestic Purple â€” #6A0DAD</option>
+                <option value="#800020">Burgundy Velvet â€” #800020</option>
+                <option value="#8B0000">Crimson Elite â€” #8B0000</option>
+                <option value="#36454F">Charcoal Titanium â€” #36454F</option>
+                <option value="#2F4F4F">Graphite Slate â€” #2F4F4F</option>
+                <option value="#111827">Obsidian Black â€” #111827</option>
               </select>
             </div>
 
@@ -1751,10 +1757,14 @@ const themeCloseBtn = document.getElementById("themeCloseBtn");
 
 if (themeConfirmBtn) {
   themeConfirmBtn.addEventListener("click", () => {
+    if (themeConfirmBtn.dataset.busy === "true") return;
+    themeConfirmBtn.dataset.busy = "true";
+
     const finalHex = normalizeHex(pendingThemeColor) || "#FFD700";
     const finalThemeName = findThemeNameByHex(finalHex);
 
     confirmedThemeColor = finalHex;
+    pendingThemeColor = finalHex;
 
     if (themeColorInput) themeColorInput.value = finalHex;
     if (themeHex) themeHex.value = finalHex;
@@ -1762,13 +1772,22 @@ if (themeConfirmBtn) {
     syncThemeUi(finalHex);
     updateThemeConfirmButton();
 
-    // ?? GREEN SUCCESS TOAST WITH EMOJI
-    showCopyToast("? " + finalThemeName + " (" + finalHex + ") theme saved successfully", "success");
+    themeConfirmBtn.classList.remove("confirm-ready");
+    themeConfirmBtn.classList.add("saved-state");
+    themeConfirmBtn.textContent = "ðŸ˜Š Theme Color Saved";
+    themeConfirmBtn.disabled = true;
 
-    // ?? KEEP MODAL OPEN SLIGHTLY SO USER SEES FEEDBACK
     setTimeout(() => {
-        closeThemePopup();
-    }, 600);
+      closeThemePopup();
+    }, 700);
+
+    setTimeout(() => {
+      themeConfirmBtn.disabled = false;
+      themeConfirmBtn.classList.remove("saved-state");
+      themeConfirmBtn.dataset.busy = "false";
+      updateThemeConfirmButton();
+    }, 950);
+  });
 });
 }
 
@@ -2142,6 +2161,7 @@ showSuccessProcessingSequence(recordId, submittedPackageType, btn);
 </script>
 </body>
 </html>
+
 
 
 
