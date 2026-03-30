@@ -47,10 +47,12 @@
     z-index: 1;
   }
 
-  body.overlay-active .form-card {
-    pointer-events: none;
-    user-select: none;
-  }
+body.overlay-active .form-card {
+  pointer-events: none;
+  user-select: none;
+  filter: blur(4px) brightness(0.7);
+  transform: scale(0.985);
+}
 
   .theme-popup-backdrop {
     position: fixed;
@@ -1166,84 +1168,88 @@ body.theme-popup-open {
 </div>
     <div class="pricing-note">Tap once to select your package. Press and hold to reveal full package features and pricing.</div>
 
-      <div class="theme-popup-backdrop" id="themePopupBackdrop" aria-hidden="true">
+    <input type="hidden" name="themeColor" id="themeColor" value="" />
+
+    <div class="theme-selection-status" id="themeSelectionStatus" hidden>
+      <div class="theme-selection-status-label">PRO Theme Selected</div>
+      <div class="theme-selection-status-value">
+        <span class="theme-selection-status-swatch" id="themeSelectionStatusSwatch"></span>
+        <span id="themeSelectionStatusText">Royal Gold — #FFD700</span>
+      </div>
+      <button type="button" class="theme-selection-edit-btn" id="editThemeBtn">Edit Theme</button>
+    </div>
+
+    <div class="theme-popup-backdrop" id="themePopupBackdrop" aria-hidden="true">
       <div class="theme-config-wrap" id="themeConfigWrap" role="dialog" aria-modal="true" aria-hidden="true">
-       </div>
-
-<input type="hidden" name="themeColor" id="themeColor" value="" />
-
-<div class="theme-selection-status" id="themeSelectionStatus" hidden>
-  <div class="theme-selection-status-label">PRO Theme Selected</div>
-  <div class="theme-selection-status-value">
-    <span class="theme-selection-status-swatch" id="themeSelectionStatusSwatch"></span>
-    <span id="themeSelectionStatusText">Royal Gold — #FFD700</span>
-  </div>
-  <button type="button" class="theme-selection-edit-btn" id="editThemeBtn">Edit Theme</button>
-</div>
-
-       <div class="theme-popup-actions">
-  <button type="button" id="themeConfirmBtn" class="theme-popup-btn">
-    Select Theme Color
-  </button>
-  <button type="button" id="themeCloseBtn" class="theme-popup-btn secondary">
-    Close
-  </button>
-</div>
-
         <h3 class="theme-config-title">PRO Theme Personalization</h3>
-      <p class="theme-config-subtext">
-        PRO clients can choose a luxury preset or set a custom brand color. Your selected theme color will be used as your vCard highlight color.
-      </p>
+        <p class="theme-config-subtext">
+          PRO clients can choose a luxury preset or set a custom brand color. Your selected theme color will be used as your vCard highlight color.
+        </p>
 
-      <input type="hidden" name="themeColor" id="themeColor" value="" />
+        <div class="theme-grid">
+          <div class="theme-input-stack">
+            <div class="theme-field">
+              <label for="themePreset">Luxury Theme Preset</label>
+              <select id="themePreset" autocomplete="off">
+                <option value="">Select a luxury theme</option>
+                <option value="#FFD700">Royal Gold — #FFD700</option>
+                <option value="#D4AF37">Champagne Gold — #D4AF37</option>
+                <option value="#C5A46D">Desert Gold — #C5A46D</option>
+                <option value="#B76E79">Rose Gold — #B76E79</option>
+                <option value="#C08081">Blush Copper — #C08081</option>
+                <option value="#CD7F32">Burnished Bronze — #CD7F32</option>
+                <option value="#8B4513">Saddle Bronze — #8B4513</option>
+                <option value="#7E4830">Espresso Copper — #7E4830</option>
+                <option value="#50C878">Emerald Green — #50C878</option>
+                <option value="#0F8B8D">Deep Teal Luxe — #0F8B8D</option>
+                <option value="#0047AB">Royal Blue — #0047AB</option>
+                <option value="#1338BE">Imperial Blue — #1338BE</option>
+                <option value="#1E3A8A">Midnight Sapphire — #1E3A8A</option>
+                <option value="#4B0082">Royal Indigo — #4B0082</option>
+                <option value="#6A0DAD">Majestic Purple — #6A0DAD</option>
+                <option value="#800020">Burgundy Velvet — #800020</option>
+                <option value="#8B0000">Crimson Elite — #8B0000</option>
+                <option value="#36454F">Charcoal Titanium — #36454F</option>
+                <option value="#2F4F4F">Graphite Slate — #2F4F4F</option>
+                <option value="#111827">Obsidian Black — #111827</option>
+              </select>
+            </div>
 
-      <div class="theme-grid">
-        <div class="theme-input-stack">
-          <div class="theme-field">
-            <label for="themePreset">Luxury Theme Preset</label>
-            <select id="themePreset" autocomplete="off">
-              <option value="">Select a luxury theme</option>
-              <option value="#FFD700">Royal Gold — #FFD700</option>
-              <option value="#D4AF37">Champagne Gold — #D4AF37</option>
-              <option value="#C5A46D">Desert Gold — #C5A46D</option>
-              <option value="#B76E79">Rose Gold — #B76E79</option>
-              <option value="#C08081">Blush Copper — #C08081</option>
-              <option value="#CD7F32">Burnished Bronze — #CD7F32</option>
-              <option value="#8B4513">Saddle Bronze — #8B4513</option>
-              <option value="#7E4830">Espresso Copper — #7E4830</option>
-              <option value="#50C878">Emerald Green — #50C878</option>
-              <option value="#0F8B8D">Deep Teal Luxe — #0F8B8D</option>
-              <option value="#0047AB">Royal Blue — #0047AB</option>
-              <option value="#1338BE">Imperial Blue — #1338BE</option>
-              <option value="#1E3A8A">Midnight Sapphire — #1E3A8A</option>
-              <option value="#4B0082">Royal Indigo — #4B0082</option>
-              <option value="#6A0DAD">Majestic Purple — #6A0DAD</option>
-              <option value="#800020">Burgundy Velvet — #800020</option>
-              <option value="#8B0000">Crimson Elite — #8B0000</option>
-              <option value="#36454F">Charcoal Titanium — #36454F</option>
-              <option value="#2F4F4F">Graphite Slate — #2F4F4F</option>
-              <option value="#111827">Obsidian Black — #111827</option>
-            </select>
+            <div class="theme-color-row">
+              <div class="theme-field">
+                <label for="themePicker">Manual Color Picker</label>
+                <input type="color" id="themePicker" value="#FFD700" />
+              </div>
+
+              <div class="theme-field">
+                <label for="themeHex">Hex Input</label>
+                <input
+                  type="text"
+                  id="themeHex"
+                  value="#FFD700"
+                  maxlength="7"
+                  placeholder="#FFD700"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
           </div>
 
-          <div class="theme-color-row">
-            <div class="theme-field">
-              <label for="themePicker">Manual Color Picker</label>
-              <input type="color" id="themePicker" value="#FFD700" />
-            </div>
-
-            <div class="theme-field">
-              <label for="themeHex">Hex Input</label>
-              <input type="text" id="themeHex" value="#FFD700" maxlength="7" placeholder="#FFD700" autocomplete="off" />
-            </div>
+          <div class="theme-preview-card">
+            <div class="theme-preview-label">Live Preview</div>
+            <div class="theme-preview-swatch" id="themePreviewSwatch"></div>
+            <div class="theme-preview-name" id="themePreviewName">Royal Gold</div>
+            <div class="theme-preview-hex" id="themePreviewHex">#FFD700</div>
           </div>
         </div>
 
-        <div class="theme-preview-card">
-          <div class="theme-preview-label">Live Preview</div>
-          <div class="theme-preview-swatch" id="themePreviewSwatch"></div>
-          <div class="theme-preview-name" id="themePreviewName">Royal Gold</div>
-          <div class="theme-preview-hex" id="themePreviewHex">#FFD700</div>
+        <div class="theme-popup-actions">
+          <button type="button" id="themeConfirmBtn" class="theme-popup-btn">
+            Select Theme Color
+          </button>
+          <button type="button" id="themeCloseBtn" class="theme-popup-btn secondary">
+            Close
+          </button>
         </div>
       </div>
     </div>
