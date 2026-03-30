@@ -48,8 +48,17 @@
   }
 
 body.overlay-active .form-card {
-  pointer-events: none;
   user-select: none;
+}
+
+body.overlay-active .form-card > *:not(.theme-popup-backdrop) {
+  pointer-events: none;
+}
+
+body.overlay-active .theme-popup-backdrop,
+body.overlay-active .theme-config-wrap,
+body.overlay-active .theme-config-wrap * {
+  pointer-events: auto;
 }
 
 .theme-popup-backdrop {
@@ -68,6 +77,10 @@ body.overlay-active .form-card {
   .theme-popup-backdrop.show {
     display: flex;
   }
+
+  .theme-popup-backdrop.show {
+    pointer-events: auto;
+}
 
 body.theme-popup-open {
   overflow: hidden;
@@ -485,6 +498,7 @@ body.theme-popup-open {
       0 0 26px rgba(216,180,254,0.12);
     position: relative;
     z-index: 10001;
+    pointer-events: auto;
 }
 
 .theme-config-wrap.show {
