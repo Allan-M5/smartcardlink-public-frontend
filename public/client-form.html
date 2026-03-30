@@ -50,22 +50,20 @@
 body.overlay-active .form-card {
   pointer-events: none;
   user-select: none;
-  filter: blur(4px) brightness(0.7);
-  transform: scale(0.985);
 }
 
-  .theme-popup-backdrop {
+.theme-popup-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     z-index: 10000;
     display: none;
     align-items: center;
     justify-content: center;
     padding: 1rem;
-  }
+}
 
   .theme-popup-backdrop.show {
     display: flex;
@@ -478,12 +476,13 @@ body.theme-popup-open {
     overflow-y: auto;
     display: none;
     border: 1px solid rgba(216,180,254,0.32);
-    background: #121212;
+    background: linear-gradient(180deg, rgba(18,18,18,0.98), rgba(10,10,10,0.98));
     border-radius: 1rem;
     padding: 1rem;
     box-shadow:
-      0 22px 60px rgba(0,0,0,0.45),
-      inset 0 0 0 1px rgba(255,255,255,0.03);
+      0 24px 70px rgba(0,0,0,0.55),
+      0 0 0 1px rgba(255,255,255,0.04) inset,
+      0 0 26px rgba(216,180,254,0.12);
     position: relative;
     z-index: 10001;
 }
