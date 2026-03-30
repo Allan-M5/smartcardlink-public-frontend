@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -533,6 +533,12 @@ body.theme-popup-open {
 }
 
 .theme-popup-btn {
+    transition: transform 0.12s ease, box-shadow 0.2s ease;
+}
+.theme-popup-btn:active {
+    transform: scale(0.96);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3) inset;
+
     width: auto;
     min-width: 190px;
     margin-top: 0;
@@ -688,6 +694,12 @@ body.theme-popup-open {
     }
 
     .theme-popup-btn {
+    transition: transform 0.12s ease, box-shadow 0.2s ease;
+}
+.theme-popup-btn:active {
+    transform: scale(0.96);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3) inset;
+
       width: 100%;
       min-width: 0;
     }
@@ -930,6 +942,12 @@ body.theme-popup-open {
   }
 
     .copy-toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999999;
+
     display: none;
     margin-top: 0.85rem;
     padding: 0.78rem 0.95rem;
@@ -1208,7 +1226,7 @@ body.theme-popup-open {
       <div class="theme-selection-status-label">PRO Theme Selected</div>
       <div class="theme-selection-status-value">
         <span class="theme-selection-status-swatch" id="themeSelectionStatusSwatch"></span>
-        <span id="themeSelectionStatusText">Royal Gold ‚Äî #FFD700</span>
+        <span id="themeSelectionStatusText">Royal Gold ó #FFD700</span>
       </div>
       <button type="button" class="theme-selection-edit-btn" id="editThemeBtn">Edit Theme</button>
     </div>
@@ -1226,26 +1244,26 @@ body.theme-popup-open {
               <label for="themePreset">Luxury Theme Preset</label>
               <select id="themePreset" autocomplete="off">
                 <option value="">Select a luxury theme</option>
-                <option value="#FFD700">Royal Gold ‚Äî #FFD700</option>
-                <option value="#D4AF37">Champagne Gold ‚Äî #D4AF37</option>
-                <option value="#C5A46D">Desert Gold ‚Äî #C5A46D</option>
-                <option value="#B76E79">Rose Gold ‚Äî #B76E79</option>
-                <option value="#C08081">Blush Copper ‚Äî #C08081</option>
-                <option value="#CD7F32">Burnished Bronze ‚Äî #CD7F32</option>
-                <option value="#8B4513">Saddle Bronze ‚Äî #8B4513</option>
-                <option value="#7E4830">Espresso Copper ‚Äî #7E4830</option>
-                <option value="#50C878">Emerald Green ‚Äî #50C878</option>
-                <option value="#0F8B8D">Deep Teal Luxe ‚Äî #0F8B8D</option>
-                <option value="#0047AB">Royal Blue ‚Äî #0047AB</option>
-                <option value="#1338BE">Imperial Blue ‚Äî #1338BE</option>
-                <option value="#1E3A8A">Midnight Sapphire ‚Äî #1E3A8A</option>
-                <option value="#4B0082">Royal Indigo ‚Äî #4B0082</option>
-                <option value="#6A0DAD">Majestic Purple ‚Äî #6A0DAD</option>
-                <option value="#800020">Burgundy Velvet ‚Äî #800020</option>
-                <option value="#8B0000">Crimson Elite ‚Äî #8B0000</option>
-                <option value="#36454F">Charcoal Titanium ‚Äî #36454F</option>
-                <option value="#2F4F4F">Graphite Slate ‚Äî #2F4F4F</option>
-                <option value="#111827">Obsidian Black ‚Äî #111827</option>
+                <option value="#FFD700">Royal Gold ó #FFD700</option>
+                <option value="#D4AF37">Champagne Gold ó #D4AF37</option>
+                <option value="#C5A46D">Desert Gold ó #C5A46D</option>
+                <option value="#B76E79">Rose Gold ó #B76E79</option>
+                <option value="#C08081">Blush Copper ó #C08081</option>
+                <option value="#CD7F32">Burnished Bronze ó #CD7F32</option>
+                <option value="#8B4513">Saddle Bronze ó #8B4513</option>
+                <option value="#7E4830">Espresso Copper ó #7E4830</option>
+                <option value="#50C878">Emerald Green ó #50C878</option>
+                <option value="#0F8B8D">Deep Teal Luxe ó #0F8B8D</option>
+                <option value="#0047AB">Royal Blue ó #0047AB</option>
+                <option value="#1338BE">Imperial Blue ó #1338BE</option>
+                <option value="#1E3A8A">Midnight Sapphire ó #1E3A8A</option>
+                <option value="#4B0082">Royal Indigo ó #4B0082</option>
+                <option value="#6A0DAD">Majestic Purple ó #6A0DAD</option>
+                <option value="#800020">Burgundy Velvet ó #800020</option>
+                <option value="#8B0000">Crimson Elite ó #8B0000</option>
+                <option value="#36454F">Charcoal Titanium ó #36454F</option>
+                <option value="#2F4F4F">Graphite Slate ó #2F4F4F</option>
+                <option value="#111827">Obsidian Black ó #111827</option>
               </select>
             </div>
 
@@ -1305,7 +1323,7 @@ body.theme-popup-open {
 
 <div class="submission-overlay" id="submissionOverlay">
   <div class="submission-status-card success-state" id="submissionStatusCard">
-    <div class="submission-emoji" id="submissionEmoji">üòéüëç</div>
+    <div class="submission-emoji" id="submissionEmoji">????</div>
     <h2 class="submission-title" id="submissionTitle">Details Successfully Submitted</h2>
 <div class="submission-id" id="submissionRecordId">Submission ID: --</div>
 <p class="submission-text" id="submissionText">Your information has been received successfully.</p>
@@ -1744,12 +1762,14 @@ if (themeConfirmBtn) {
     syncThemeUi(finalHex);
     updateThemeConfirmButton();
 
-    showCopyToast(finalThemeName + " (" + finalHex + ") theme color selected and saved.", "success");
+    // ?? GREEN SUCCESS TOAST WITH EMOJI
+    showCopyToast("? " + finalThemeName + " (" + finalHex + ") theme saved successfully", "success");
 
+    // ?? KEEP MODAL OPEN SLIGHTLY SO USER SEES FEEDBACK
     setTimeout(() => {
-      closeThemePopup();
-    }, 120);
-  });
+        closeThemePopup();
+    }, 600);
+});
 }
 
 if (themeCloseBtn) {
@@ -1950,7 +1970,7 @@ function showSuccessProcessingSequence(recordId, packageType, btn) {
   submissionActions.classList.add("show");
 
   submissionStatusCard.className = "submission-status-card success-state";
-  submissionEmoji.textContent = "‚úÖ";
+  submissionEmoji.textContent = "?";
   submissionTitle.textContent = "Submission Successful";
   submissionRecordId.textContent = "Submission ID: " + recordId;
   submissionRecordId.style.display = "inline-block";
@@ -2122,6 +2142,7 @@ showSuccessProcessingSequence(recordId, submittedPackageType, btn);
 </script>
 </body>
 </html>
+
 
 
 
