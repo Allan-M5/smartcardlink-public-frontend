@@ -539,20 +539,13 @@ body.theme-popup-open {
     padding: 0.82rem 1rem;
     border-radius: 999px;
     font-weight: 800;
-    transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    transition: transform 0.12s ease, box-shadow 0.2s ease;
 }
-
 .theme-popup-btn:active {
     transform: scale(0.96);
     box-shadow: 0 4px 10px rgba(0,0,0,0.3) inset;
 }
 
-.theme-popup-btn.saved-state {
-    background: linear-gradient(135deg, rgba(16,185,129,0.95), rgba(34,197,94,0.92));
-    color: #ffffff;
-    border: 1px solid rgba(134,239,172,0.65);
-    box-shadow: 0 10px 24px rgba(16,185,129,0.28);
-}
 .theme-popup-btn.secondary {
     background: rgba(255,255,255,0.08);
     color: #fff;
@@ -703,12 +696,6 @@ body.theme-popup-open {
       width: 100%;
       min-width: 0;
     }
-.theme-popup-btn.saved-state {
-    background: linear-gradient(135deg, rgba(16,185,129,0.95), rgba(34,197,94,0.92));
-    color: #ffffff;
-    border: 1px solid rgba(134,239,172,0.65);
-    box-shadow: 0 10px 24px rgba(16,185,129,0.28);
-}
 }
 
   .form-message {
@@ -947,13 +934,11 @@ body.theme-popup-open {
     display: flex;
   }
 
-    .copy-toast {
+  .copy-toast {
     position: fixed;
     top: 20px;
     left: 50%;
-    transform: translateX(-50%);
     z-index: 999999;
-
     display: none;
     margin-top: 0.85rem;
     padding: 0.78rem 0.95rem;
@@ -966,14 +951,14 @@ body.theme-popup-open {
     background: rgba(255,255,255,0.08);
     color: #ffffff;
     opacity: 0;
-    transform: translateY(8px);
+    transform: translate(-50%, 8px);
     transition: opacity 0.22s ease, transform 0.22s ease;
   }
 
   .copy-toast.show {
     display: block;
     opacity: 1;
-    transform: translateY(0);
+    transform: translate(-50%, 0);
   }
 
   .copy-toast.success {
@@ -1329,7 +1314,7 @@ body.theme-popup-open {
 
 <div class="submission-overlay" id="submissionOverlay">
   <div class="submission-status-card success-state" id="submissionStatusCard">
-    <div class="submission-emoji" id="submissionEmoji">????</div>
+    <div class="submission-emoji" id="submissionEmoji">✅</div>
     <h2 class="submission-title" id="submissionTitle">Details Successfully Submitted</h2>
 <div class="submission-id" id="submissionRecordId">Submission ID: --</div>
 <p class="submission-text" id="submissionText">Your information has been received successfully.</p>
@@ -1757,14 +1742,10 @@ const themeCloseBtn = document.getElementById("themeCloseBtn");
 
 if (themeConfirmBtn) {
   themeConfirmBtn.addEventListener("click", () => {
-    if (themeConfirmBtn.dataset.busy === "true") return;
-    themeConfirmBtn.dataset.busy = "true";
-
     const finalHex = normalizeHex(pendingThemeColor) || "#FFD700";
     const finalThemeName = findThemeNameByHex(finalHex);
 
     confirmedThemeColor = finalHex;
-    pendingThemeColor = finalHex;
 
     if (themeColorInput) themeColorInput.value = finalHex;
     if (themeHex) themeHex.value = finalHex;
@@ -1772,22 +1753,24 @@ if (themeConfirmBtn) {
     syncThemeUi(finalHex);
     updateThemeConfirmButton();
 
-    themeConfirmBtn.classList.remove("confirm-ready");
-    themeConfirmBtn.classList.add("saved-state");
+    // UX FEEDBACK ON BUTTON
     themeConfirmBtn.textContent = "😊 Theme Color Saved";
+    themeConfirmBtn.style.background = "#16a34a";
+    themeConfirmBtn.style.borderColor = "#16a34a";
+    themeConfirmBtn.style.color = "#fff";
+
     themeConfirmBtn.disabled = true;
 
     setTimeout(() => {
-      closeThemePopup();
-    }, 700);
+        closeThemePopup();
 
-    setTimeout(() => {
-      themeConfirmBtn.disabled = false;
-      themeConfirmBtn.classList.remove("saved-state");
-      themeConfirmBtn.dataset.busy = "false";
-      updateThemeConfirmButton();
-    }, 950);
-  });
+        // RESET BUTTON
+        themeConfirmBtn.textContent = "Save Theme Color";
+        themeConfirmBtn.style.background = "";
+        themeConfirmBtn.style.borderColor = "";
+        themeConfirmBtn.style.color = "";
+        themeConfirmBtn.disabled = false;
+    }, 700);
 });
 }
 
@@ -1989,7 +1972,7 @@ function showSuccessProcessingSequence(recordId, packageType, btn) {
   submissionActions.classList.add("show");
 
   submissionStatusCard.className = "submission-status-card success-state";
-  submissionEmoji.textContent = "?";
+  submissionEmoji.textContent = "✅";
   submissionTitle.textContent = "Submission Successful";
   submissionRecordId.textContent = "Submission ID: " + recordId;
   submissionRecordId.style.display = "inline-block";
@@ -2161,6 +2144,9 @@ showSuccessProcessingSequence(recordId, submittedPackageType, btn);
 </script>
 </body>
 </html>
+
+
+
 
 
 
