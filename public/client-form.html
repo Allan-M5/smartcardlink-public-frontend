@@ -548,8 +548,8 @@ body.theme-popup-open {
 }
 
 .theme-popup-btn.confirm-ready {
-    background: linear-gradient(135deg, #c084fc, #d8b4fe);
-    color: #111;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
     border: 1px solid rgba(255,255,255,0.18);
 }
 
@@ -1279,7 +1279,7 @@ body.theme-popup-open {
 
         <div class="theme-popup-actions">
           <button type="button" id="themeConfirmBtn" class="theme-popup-btn">
-            Select Theme Color
+            Save Theme Color
           </button>
           <button type="button" id="themeCloseBtn" class="theme-popup-btn secondary">
             Close
@@ -1501,16 +1501,12 @@ function updateThemeConfirmButton() {
   if (!themeConfirmBtn) return;
 
   const selected = normalizeHex(pendingThemeColor);
-  const confirmed = normalizeHex(confirmedThemeColor);
 
-  if (selected && confirmed && selected === confirmed) {
-    themeConfirmBtn.textContent = "Theme Color Selected";
-    themeConfirmBtn.classList.add("confirm-ready");
-  } else if (selected) {
-    themeConfirmBtn.textContent = "Theme Color Selected";
+  if (selected) {
+    themeConfirmBtn.textContent = "Save Theme Color";
     themeConfirmBtn.classList.add("confirm-ready");
   } else {
-    themeConfirmBtn.textContent = "Select Theme Color";
+    themeConfirmBtn.textContent = "Save Theme Color";
     themeConfirmBtn.classList.remove("confirm-ready");
   }
 }
@@ -1738,6 +1734,7 @@ const themeCloseBtn = document.getElementById("themeCloseBtn");
 if (themeConfirmBtn) {
   themeConfirmBtn.addEventListener("click", () => {
     const finalHex = normalizeHex(pendingThemeColor) || "#FFD700";
+    const finalThemeName = findThemeNameByHex(finalHex);
 
     confirmedThemeColor = finalHex;
 
@@ -1747,9 +1744,11 @@ if (themeConfirmBtn) {
     syncThemeUi(finalHex);
     updateThemeConfirmButton();
 
+    showCopyToast(finalThemeName + " (" + finalHex + ") theme color selected and saved.", "success");
+
     setTimeout(() => {
       closeThemePopup();
-    }, 60);
+    }, 120);
   });
 }
 
