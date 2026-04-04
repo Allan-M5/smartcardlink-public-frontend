@@ -1,7 +1,8 @@
 (function () {
   'use strict';
 
-  const API_ROOT = 'https://smartcardlink-api.onrender.com';
+  const API_ROOT = document.documentElement.getAttribute('data-api-root') || 'https://smartcardlink-api.onrender.com';
+  const PROFILE_CACHE_TTL_MS = 5 * 60 * 1000;
   const APPLY_VCARD_URL = 'https://smartcardlink-dashboard-frontend.onrender.com/client-form.html';
   const PRO_ONLY_MESSAGE = 'Available to PRO users';
 
@@ -216,28 +217,89 @@ function forceClick(selector, handler) {
     document.documentElement.style.setProperty('--theme-color', theme);
   }
 
-  async function fetchProfileData() {
+  function getProfileCacheKey(slug) {
+    return `smartcardlink:vcard:${String(slug || '').trim().toLowerCase()}`;
+  }
+
+  function readCachedProfile(slug) {
     try {
-      const urlParams = new URLSearchParams(window.location.search);
-      const clientSlug = urlParams.get('slug') || window.location.pathname.split('/').pop();
+      const raw = localStorage.getItem(getProfileCacheKey(slug));
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed || !parsed.data || !parsed.cachedAt) return null;
+      if ((Date.now() - Number(parsed.cachedAt)) > PROFILE_CACHE_TTL_MS) return null;
+      return parsed.data;
+    } catch (_) {
+      return null;
+    }
+  }
 
-      if (!clientSlug || clientSlug === 'index.html') {
-        throw new Error('VCard identifier not found.');
-      }
+  function writeCachedProfile(slug, data) {
+    try {
+      if (!slug || !data) return;
+      localStorage.setItem(getProfileCacheKey(slug), JSON.stringify({
+        data,
+        cachedAt: Date.now()
+      }));
+    } catch (_) {}
+  }
 
+  async function fetchJsonWithTimeout(url, options = {}, timeoutMs = 8000) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+      });
+      return response;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async function fetchProfileData() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const clientSlug = (urlParams.get('slug') || window.location.pathname.split('/').pop() || '').trim().toLowerCase();
+
+    if (!clientSlug || clientSlug === 'index.html') {
+      showMessage('VCard identifier not found.', true);
+      return null;
+    }
+
+    const cached = readCachedProfile(clientSlug);
+    if (cached) {
+      hideMessageArea();
+      return cached;
+    }
+
+    try {
       showMessage('Loading Professional vCard...');
-      const res = await fetch(`${API_ROOT}/api/vcard/${encodeURIComponent(clientSlug)}`, { cache: 'no-store' });
-      if (!res.ok) throw new Error('Card not found.');
+      const res = await fetchJsonWithTimeout(`${API_ROOT}/api/vcard/${encodeURIComponent(clientSlug)}`, {
+        cache: 'default',
+        headers: {
+          'Accept': 'application/json'
+        }
+      }, 8000);
+
+      if (!res.ok) throw new Error(res.status === 404 ? 'Card not found.' : 'Unable to load this vCard right now.');
 
       const json = await res.json();
-      if (json.status !== 'success') {
+      if (json.status !== 'success' || !json.data) {
         throw new Error(json.message || 'Inactive card');
       }
 
+      writeCachedProfile(clientSlug, json.data);
       hideMessageArea();
       return json.data;
     } catch (err) {
-      showMessage(err.message, true);
+      if (cached) {
+        hideMessageArea();
+        return cached;
+      }
+
+      showMessage(err.name === 'AbortError' ? 'Connection timed out. Please try again.' : err.message, true);
       return null;
     }
   }
@@ -247,9 +309,10 @@ function forceClick(selector, handler) {
 
     const photoSrc = url || '/public/images/default-photo.png';
     const qrSrc = qrUrl || '';
+    const imgAttrs = 'loading="eager" fetchpriority="high" decoding="async"';
 
     if (!qrSrc) {
-      photoArea.innerHTML = `<img src="${photoSrc}" alt="Profile" class="profile-main-image">`;
+      photoArea.innerHTML = `<img src="${photoSrc}" alt="Profile" class="profile-main-image" ${imgAttrs}>`;
       return;
     }
 
@@ -257,7 +320,7 @@ function forceClick(selector, handler) {
       <div class="photo-swipe-container">
         <div class="photo-swipe-track">
           <div class="photo-panel">
-            <img src="${photoSrc}" alt="Profile" class="profile-main-image">
+            <img src="${photoSrc}" alt="Profile" class="profile-main-image" ${imgAttrs}>
           </div>
           <div class="qr-panel">
             <img data-src="${qrSrc}" alt="QR Code" class="profile-qr-image lazy-qr">
@@ -545,7 +608,7 @@ function renderPackageUI(client) {
   }
 }
 
-function buildReminderIcs(client, selectedDateTime) {
+function buildReminderGoogleCalendarUrl(client, selectedDateTime) {
   const chosen = selectedDateTime ? new Date(selectedDateTime) : new Date(Date.now() + 24 * 60 * 60 * 1000);
 
   if (Number.isNaN(chosen.getTime())) {
@@ -555,7 +618,7 @@ function buildReminderIcs(client, selectedDateTime) {
   const start = new Date(chosen);
   const end = new Date(start.getTime() + 30 * 60 * 1000);
 
-  const toUtcStamp = (value) => {
+  const toCalendarUtcStamp = (value) => {
     const yyyy = value.getUTCFullYear();
     const mm = String(value.getUTCMonth() + 1).padStart(2, '0');
     const dd = String(value.getUTCDate()).padStart(2, '0');
@@ -566,32 +629,23 @@ function buildReminderIcs(client, selectedDateTime) {
   };
 
   const title = `Reminder to contact ${client.fullName || 'Profile Owner'}`;
-  const description = [
+  const details = [
     `Remember to contact ${client.fullName || 'this profile owner'}.`,
     client.title ? `Title: ${client.title}` : '',
     client.company ? `Company: ${client.company}` : '',
     client.phone1 ? `Phone: ${client.phone1}` : '',
     client.email1 ? `Email: ${client.email1}` : '',
     window.location.href ? `Profile: ${window.location.href}` : ''
-  ].filter(Boolean).join('\\n');
+  ].filter(Boolean).join('\n');
 
-  return `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//SmartCardLink//Reminder//EN
-BEGIN:VEVENT
-UID:${Date.now()}@smartcardlink
-DTSTAMP:${toUtcStamp(new Date())}
-DTSTART:${toUtcStamp(start)}
-DTEND:${toUtcStamp(end)}
-SUMMARY:${title}
-DESCRIPTION:${description}
-BEGIN:VALARM
-TRIGGER:-PT10M
-ACTION:DISPLAY
-DESCRIPTION:${title}
-END:VALARM
-END:VEVENT
-END:VCALENDAR`;
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: title,
+    details,
+    dates: `${toCalendarUtcStamp(start)}/${toCalendarUtcStamp(end)}`
+  });
+
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
 
 function openReminderPicker(client) {
@@ -604,7 +658,7 @@ function openReminderPicker(client) {
       <input type="datetime-local" class="access-input" id="reminderDateTimeInput">
       <div class="access-actions">
         <button type="button" class="access-btn secondary" id="reminderCancelBtn">Cancel</button>
-        <button type="button" class="access-btn" id="reminderConfirmBtn">Add Reminder</button>
+        <button type="button" class="access-btn" id="reminderConfirmBtn">Open Google Calendar</button>
       </div>
     </div>
   `;
@@ -630,20 +684,13 @@ function openReminderPicker(client) {
 
   confirmBtn.onclick = () => {
     try {
-      const ics = buildReminderIcs(client, input.value);
-      const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-
-      a.href = url;
-      a.download = `contact-${(client.fullName || 'profile-owner').toLowerCase().replace(/\\s+/g, '-')}-reminder.ics`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-
-      window.setTimeout(() => URL.revokeObjectURL(url), 3000);
+      const calendarUrl = buildReminderGoogleCalendarUrl(client, input.value);
       overlay.remove();
-      showToast('Reminder file opened. Save it in your phone calendar to enable alerts.');
+
+      const win = window.open(calendarUrl, '_blank', 'noopener,noreferrer');
+      if (!win) {
+        window.location.href = calendarUrl;
+      }
     } catch (error) {
       showToast('Invalid reminder date/time', true);
     }
@@ -665,7 +712,7 @@ async function requestResumeAccess(mode) {
     return;
   }
 
-    const previewTab = null;
+  const previewTab = mode === 'view' ? window.open('', '_blank') : null;
 
   try {
     showError(errors.resumeAccess, '');
@@ -697,10 +744,16 @@ async function requestResumeAccess(mode) {
       a.click();
       document.body.removeChild(a);
     } else {
-      window.open(payload.fileUrl, '_blank', 'noopener,noreferrer');
+      if (previewTab) {
+        previewTab.location.href = payload.fileUrl;
+      } else {
+        window.open(payload.fileUrl, '_blank', 'noopener,noreferrer');
+      }
     }
   } catch (error) {
-
+    if (previewTab && !previewTab.closed) {
+      previewTab.close();
+    }
     showError(errors.resumeAccess, error.message || 'Resume access denied.');
   }
 }
