@@ -417,14 +417,22 @@
 
   function refreshPopup1Layout() {
     if (!popup1) return;
-    popup1.style.height = 'auto';
-    popup1.style.overflow = 'visible';
 
     const inner = qs('.card-inner', popup1);
     if (!inner) return;
 
+    popup1.style.height = '';
+    popup1.style.overflow = '';
+
+    const isMobile = window.matchMedia('(max-width: 520px)').matches;
+
+    if (isMobile) {
+      popup1.style.minHeight = '';
+      return;
+    }
+
     const brandHeight = brandHeader ? brandHeader.offsetHeight : 0;
-    const targetHeight = inner.scrollHeight + brandHeight + 32;
+    const targetHeight = inner.scrollHeight + brandHeight + 16;
     popup1.style.minHeight = `${targetHeight}px`;
   }
 
@@ -1080,6 +1088,7 @@
 
   document.addEventListener('DOMContentLoaded', init);
 })();
+
 
 
 
