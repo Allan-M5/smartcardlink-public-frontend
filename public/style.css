@@ -1264,3 +1264,38 @@ button {
     border-bottom: 1px solid #ccc !important;
   }
 }
+
+/* === Popup2 collapse fix === */
+#popup2 {
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 100% !important;
+  overflow: visible !important;
+  z-index: 20;
+}
+
+#popup2 .popup-surface,
+#popup2 .popup2-surface {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 100% !important;
+  overflow: visible !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+#popup2 .card-inner,
+#popup2 .popup2-inner {
+  height: auto !important;
+  min-height: 0 !important;
+  overflow-y: visible !important;
+  overflow-x: hidden !important;
+}
+
+#popup2 .popup-footer,
+#popup2 .popup-footer-actions,
+#popup2 .footer-action-row {
+  flex-shrink: 0 !important;
+}
