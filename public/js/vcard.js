@@ -473,12 +473,55 @@
     bind(actions.wa, () => { window.open(`https://wa.me/${phone.replace(/\D/g, '')}`, '_blank', 'noopener,noreferrer'); }, phone);
     bind(actions.print, () => printProfileSheet(), true);
     bind(actions.save, () => {
-      const vcf = `BEGIN:VCARD\nVERSION:3.0\nFN:${client.fullName || ''}\nTEL;TYPE=CELL:${client.phone1 || ''}\nEMAIL:${client.email1 || ''}\nORG:${client.company || ''}\nTITLE:${client.title || ''}\nEND:VCARD`;
-      const blob = new Blob([vcf], { type: 'text/vcard' });
+      const fullNameValue = String(client.fullName || '').trim();
+      const nameParts = fullNameValue ? fullNameValue.split(/\s+/) : [];
+      const firstName = nameParts.length ? nameParts[0] : '';
+      const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : '';
+      const middleName = nameParts.length > 2 ? nameParts.slice(1, -1).join(' ') : '';
+
+      const escapeVcf = (value) => String(value || '')
+        .replace(/\\/g, '\\\\')
+        .replace(/\r?\n/g, '\\n')
+        .replace(/;/g, '\\;')
+        .replace(/,/g, '\\,');
+
+      const phones = [client.phone1, client.phone2, client.phone3, ...getExtraValues(client, 'phone')]
+        .map((v) => String(v || '').trim())
+        .filter(Boolean)
+        .filter((v, i, arr) => arr.indexOf(v) === i);
+
+      const emails = [client.email1, client.email2, client.email3, ...getExtraValues(client, 'email')]
+        .map((v) => String(v || '').trim())
+        .filter(Boolean)
+        .filter((v, i, arr) => arr.indexOf(v) === i);
+
+      const lines = [
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        `FN:${escapeVcf(fullNameValue)}`,
+        `N:${escapeVcf(lastName)};${escapeVcf(firstName)};${escapeVcf(middleName)};;`,
+        client.company ? `ORG:${escapeVcf(client.company)}` : '',
+        client.title ? `TITLE:${escapeVcf(client.title)}` : ''
+      ];
+
+      phones.forEach((phone, index) => {
+        lines.push(`TEL;TYPE=${index === 0 ? 'CELL' : 'VOICE'}:${escapeVcf(phone)}`);
+      });
+
+      emails.forEach((email, index) => {
+        lines.push(`EMAIL;TYPE=${index === 0 ? 'INTERNET' : 'OTHER'}:${escapeVcf(email)}`);
+      });
+
+      lines.push('END:VCARD');
+
+      const vcf = lines.filter(Boolean).join('\r\n');
+      const blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `${client.fullName || 'contact'}.vcf`;
+      a.download = `${fullNameValue || 'contact'}.vcf`;
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
       window.setTimeout(() => URL.revokeObjectURL(a.href), 3000);
     }, client.fullName);
   }
@@ -1229,6 +1272,7 @@
 
   document.addEventListener('DOMContentLoaded', init);
 })();
+
 
 
 
