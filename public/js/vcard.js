@@ -512,6 +512,32 @@
   `).join('');
 }
 
+  function getExtraValues(client, baseKey) {
+    const values = [];
+    const add = (value) => {
+      const text = String(value || '').trim();
+      if (text && !values.includes(text)) values.push(text);
+    };
+
+    add(client[`${baseKey}2`]);
+    add(client[`${baseKey}3`]);
+    add(client[`${baseKey}4`]);
+
+    const pluralKeys = [
+      `${baseKey}s`,
+      `${baseKey}Numbers`,
+      `${baseKey}Addresses`,
+      `additional${baseKey.charAt(0).toUpperCase()}${baseKey.slice(1)}s`
+    ];
+
+    pluralKeys.forEach((key) => {
+      const source = client[key];
+      if (Array.isArray(source)) source.forEach(add);
+    });
+
+    return values;
+  }
+
   function renderContactDropdown(listNode, buttonNode, values, mode) {
     if (!listNode || !buttonNode) return;
 
@@ -1054,6 +1080,8 @@
 
   document.addEventListener('DOMContentLoaded', init);
 })();
+
+
 
 
 
