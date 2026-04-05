@@ -108,6 +108,22 @@
     analyticsProTag: el('analyticsProTag')
   };
 
+  const printEls = {
+    sheet: el('printSheet'),
+    photo: el('printPhoto'),
+    fullName: el('printFullName'),
+    title: el('printTitle'),
+    company: el('printCompany'),
+    vcardUrl: el('printVcardUrl'),
+    phones: el('printPhones'),
+    emails: el('printEmails'),
+    address: el('printAddress'),
+    bio: el('printBio'),
+    hoursTable: el('printHoursTable'),
+    links: el('printLinks'),
+    socials: el('printSocials')
+  };
+
   let currentClient = null;
   let pendingResumeMode = 'view';
 
@@ -455,7 +471,7 @@
     bind(actions.sms, () => { window.location.href = `sms:${phone}`; }, phone);
     bind(actions.mail, () => { window.location.href = `mailto:${email}`; }, email);
     bind(actions.wa, () => { window.open(`https://wa.me/${phone.replace(/\D/g, '')}`, '_blank', 'noopener,noreferrer'); }, phone);
-    bind(actions.print, () => window.print(), true);
+    bind(actions.print, () => printProfileSheet(), true);
     bind(actions.save, () => {
       const vcf = `BEGIN:VCARD\nVERSION:3.0\nFN:${client.fullName || ''}\nTEL;TYPE=CELL:${client.phone1 || ''}\nEMAIL:${client.email1 || ''}\nORG:${client.company || ''}\nTITLE:${client.title || ''}\nEND:VCARD`;
       const blob = new Blob([vcf], { type: 'text/vcard' });
@@ -596,6 +612,130 @@
       buttonNode.classList.toggle('open', willOpen);
       refreshPopup1Layout();
     };
+  }
+
+  function escapeHtml(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function formatPrintList(title, values) {
+    const cleanValues = (Array.isArray(values) ? values : [values])
+      .map((item) => String(item || '').trim())
+      .filter(Boolean);
+
+    if (!cleanValues.length) return '';
+
+    return `
+      <div class="print-list-group">
+        <div class="print-list-title">${escapeHtml(title)}</div>
+        ${cleanValues.map((item) => `<div class="print-list-item">${escapeHtml(item)}</div>`).join('')}
+      </div>
+    `;
+  }
+
+  function renderPrintSheet(client) {
+    if (!printEls.sheet) return;
+
+    const photoUrl = String(client.photoUrl || '').trim() || '/public/images/default-photo.png';
+    const phones = [client.phone1, client.phone2, client.phone3, ...getExtraValues(client, 'phone')]
+      .map((v) => String(v || '').trim())
+      .filter(Boolean)
+      .filter((v, i, arr) => arr.indexOf(v) === i);
+
+    const emails = [client.email1, client.email2, client.email3, ...getExtraValues(client, 'email')]
+      .map((v) => String(v || '').trim())
+      .filter(Boolean)
+      .filter((v, i, arr) => arr.indexOf(v) === i);
+
+    const links = [
+      ['Business Website', client.businessWebsite],
+      ['Portfolio Website', client.portfolioWebsite],
+      ['Location Map', client.locationMap || client.locationMapUrl],
+      ['Physical Address', client.address || client.physicalAddress],
+      ['Appointment Link', client.appointmentUrl || client.bookingLink],
+      ['vCard URL', client.vcardUrl || window.location.href]
+    ].filter(([, value]) => String(value || '').trim());
+
+    const socials = [];
+    const socialLinks = client.socialLinks || {};
+    [
+      ['Facebook', socialLinks.facebook || client.facebook],
+      ['Instagram', socialLinks.instagram || client.instagram],
+      ['X', socialLinks.twitter || socialLinks.x || client.twitter || client.x],
+      ['LinkedIn', socialLinks.linkedin || client.linkedin],
+      ['TikTok', socialLinks.tiktok || client.tiktok],
+      ['YouTube', socialLinks.youtube || client.youtube]
+    ].forEach(([label, value]) => {
+      const clean = String(value || '').trim();
+      if (clean) socials.push([label, clean]);
+    });
+
+    if (printEls.photo) printEls.photo.src = photoUrl;
+    if (printEls.fullName) printEls.fullName.textContent = client.fullName || '';
+    if (printEls.title) printEls.title.textContent = client.title || '';
+    if (printEls.company) printEls.company.textContent = client.company || '';
+    if (printEls.vcardUrl) printEls.vcardUrl.textContent = client.vcardUrl || window.location.href;
+    if (printEls.bio) printEls.bio.textContent = client.bio || 'Not provided';
+
+    if (printEls.phones) printEls.phones.innerHTML = formatPrintList('Phone Numbers', phones);
+    if (printEls.emails) printEls.emails.innerHTML = formatPrintList('Email Addresses', emails);
+    if (printEls.address) printEls.address.innerHTML = formatPrintList('Address', client.address || client.physicalAddress || 'Not provided');
+
+    if (printEls.links) {
+      printEls.links.innerHTML = links.length
+        ? links.map(([label, value]) => `
+            <div class="print-list-group">
+              <div class="print-list-title">${escapeHtml(label)}</div>
+              <div class="print-list-item">${escapeHtml(value)}</div>
+            </div>
+          `).join('')
+        : '<div class="print-list-item">Not provided</div>';
+    }
+
+    if (printEls.socials) {
+      printEls.socials.innerHTML = socials.length
+        ? socials.map(([label, value]) => `
+            <div class="print-list-group">
+              <div class="print-list-title">${escapeHtml(label)}</div>
+              <div class="print-list-item">${escapeHtml(value)}</div>
+            </div>
+          `).join('')
+        : '<div class="print-list-item">Not provided</div>';
+    }
+
+    const hoursTable = printEls.hoursTable;
+    if (hoursTable) {
+      const tbody = qs('tbody', hoursTable);
+      if (tbody) {
+        const hours = client.workingHours || {};
+        const clean = (value) => String(value || '').trim();
+        const display = (value, fallback = '-') => clean(value) || fallback;
+
+        const rows = [
+          ['Mon-Fri', display(hours.monFriStart, '08:00'), display(hours.monFriEnd, '17:00')],
+          ['Saturday', display(hours.satStart, '09:00'), display(hours.satEnd, '12:00')],
+          ['Sunday', clean(hours.sunStart) || 'Closed', clean(hours.sunEnd) || 'Closed']
+        ];
+
+        tbody.innerHTML = rows.map(([day, start, end]) => `
+          <tr>
+            <td>${escapeHtml(day)}</td>
+            <td>${escapeHtml(start)}</td>
+            <td>${escapeHtml(end)}</td>
+          </tr>
+        `).join('');
+      }
+    }
+  }
+
+  function printProfileSheet() {
+    if (currentClient) renderPrintSheet(currentClient);
+    window.print();
   }
 
   function renderPackageUI(client) {
@@ -1045,6 +1185,7 @@
     setupPrimaryLinks(client);
     renderPackageUI(client);
     renderWorkingHours(client);
+    renderPrintSheet(client);
     setAnalyticsCounts(client.analytics || {});
     wireFooterActions(client);
     wireResumeButtons(client);
@@ -1088,6 +1229,16 @@
 
   document.addEventListener('DOMContentLoaded', init);
 })();
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1407,3 +1407,169 @@ button {
   }
 }
 
+
+/* === Print sheet layout === */
+.print-sheet {
+  display: none;
+}
+
+.print-sheet-inner {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  color: #111;
+  background: #fff;
+}
+
+.print-sheet-header {
+  border-bottom: 2px solid #222;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+}
+
+.print-sheet-brand {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+}
+
+.print-sheet-subtitle {
+  font-size: 14px;
+  color: #444;
+  margin-top: 4px;
+}
+
+.print-sheet-top {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 24px;
+  align-items: start;
+  margin-bottom: 22px;
+}
+
+.print-photo-wrap {
+  width: 220px;
+}
+
+.print-photo {
+  width: 100%;
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+  display: block;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.print-full-name {
+  font-size: 30px;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.print-title,
+.print-company,
+.print-vcard-url {
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.print-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.print-block {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 14px;
+  break-inside: avoid;
+}
+
+.print-block h2 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #000;
+}
+
+.print-text {
+  white-space: pre-wrap;
+  line-height: 1.6;
+  font-size: 13px;
+}
+
+.print-list-group + .print-list-group {
+  margin-top: 10px;
+}
+
+.print-list-title {
+  font-weight: 700;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.print-list-item {
+  font-size: 13px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.print-hours-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.print-hours-table th,
+.print-hours-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.print-hours-table th {
+  background: #f2f2f2;
+}
+
+@media print {
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    min-height: auto !important;
+  }
+
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .app-bg,
+  .vcard,
+  #popup1,
+  #popup2,
+  .card-surface,
+  .popup,
+  .popup-surface,
+  .access-modal,
+  .toast-host,
+  .messageArea,
+  #messageArea {
+    display: none !important;
+  }
+
+  .print-sheet {
+    display: block !important;
+    background: #fff !important;
+    color: #000 !important;
+    padding: 18px !important;
+  }
+
+  @page {
+    margin: 12mm;
+    size: auto;
+  }
+}

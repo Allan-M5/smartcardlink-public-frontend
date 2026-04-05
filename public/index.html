@@ -244,8 +244,66 @@
     </div>
   </div>
 
+    <section id="printSheet" class="print-sheet" aria-hidden="true" hidden>
+    <div class="print-sheet-inner">
+      <div class="print-sheet-header">
+        <div class="print-sheet-brand">SMARTCARDLINK</div>
+        <div class="print-sheet-subtitle">Professional Contact Profile</div>
+      </div>
+
+      <div class="print-sheet-top">
+        <div class="print-photo-wrap">
+          <img id="printPhoto" class="print-photo" alt="Profile Photo" />
+        </div>
+        <div class="print-identity">
+          <h1 id="printFullName" class="print-full-name"></h1>
+          <div id="printTitle" class="print-title"></div>
+          <div id="printCompany" class="print-company"></div>
+          <div id="printVcardUrl" class="print-vcard-url"></div>
+        </div>
+      </div>
+
+      <div class="print-grid">
+        <section class="print-block">
+          <h2>Contact Details</h2>
+          <div id="printPhones" class="print-list"></div>
+          <div id="printEmails" class="print-list"></div>
+          <div id="printAddress" class="print-list"></div>
+        </section>
+
+        <section class="print-block">
+          <h2>Biography</h2>
+          <div id="printBio" class="print-text"></div>
+        </section>
+
+        <section class="print-block">
+          <h2>Work Schedule</h2>
+          <table class="print-hours-table" id="printHoursTable">
+            <thead>
+              <tr><th>Day</th><th>Start</th><th>End</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </section>
+
+        <section class="print-block">
+          <h2>Links</h2>
+          <div id="printLinks" class="print-list"></div>
+        </section>
+
+        <section class="print-block">
+          <h2>Social Profiles</h2>
+          <div id="printSocials" class="print-list"></div>
+        </section>
+      </div>
+    </div>
+  </section>
+
   <script src="/js/vcard.js" defer fetchpriority="high"></script>
 </body>
 </html>
+
+
+
 
 
