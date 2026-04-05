@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   'use strict';
 
   const API_ROOT = document.documentElement.getAttribute('data-api-root') || 'https://smartcardlink-api.onrender.com';
@@ -412,6 +412,26 @@ function forceClick(selector, handler) {
     });
   }
 
+  function refreshPopup1Layout() {
+    if (!popup1) return;
+
+    popup1.style.height = 'auto';
+    popup1.style.minHeight = 'unset';
+    popup1.style.overflow = 'visible';
+
+    const inner = qs('.card-inner', popup1);
+    if (!inner) return;
+
+    inner.style.height = 'auto';
+    inner.style.minHeight = 'unset';
+    inner.style.overflow = 'visible';
+
+    const contactBoxes = qsa('.contact-box', popup1);
+    contactBoxes.forEach((box) => {
+      box.style.overflow = 'visible';
+    });
+  }
+
   function setupActions(client) {
     const phone = String(client.phone1 || '').trim();
     const email = String(client.email1 || '').trim();
@@ -478,7 +498,7 @@ function forceClick(selector, handler) {
     if (!tbody) return;
 
     const hours = client.workingHours || {};
-    const safe = (value) => String(value || '').trim() || '—';
+    const safe = (value) => String(value || '').trim() || 'â€”';
 
     const rows = [
       ['Mon-Fri', safe(hours.monFriStart), safe(hours.monFriEnd)],

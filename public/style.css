@@ -1083,3 +1083,54 @@ button {
     padding: 8px 10px;
   }
 }
+/* === Popup1 expansion fix === */
+#popup1,
+.card-surface#popup1 {
+  height: auto !important;
+  min-height: unset !important;
+  overflow: visible !important;
+  align-self: start !important;
+}
+
+#popup1 .card-inner,
+#popup1 .popup1-inner {
+  height: auto !important;
+  min-height: unset !important;
+  overflow: visible !important;
+}
+
+#popup1 .contact-section,
+#popup1 .contact-box,
+#popup1 .box-main,
+#popup1 .contact-primary-wrap {
+  overflow: visible !important;
+}
+
+#popup1 .box-list {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  max-height: none !important;
+  margin-top: 10px !important;
+  overflow: visible !important;
+}
+
+#popup1 .box-list[hidden] {
+  display: none !important;
+}
+
+#popup1 .contact-box {
+  margin-bottom: 12px !important;
+}
+
+#popup1 .actions-grid,
+#popup1 .nav-row {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.vcard,
+.app-bg,
+main.vcard {
+  overflow: visible !important;
+}
