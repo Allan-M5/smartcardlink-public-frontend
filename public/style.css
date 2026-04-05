@@ -1134,3 +1134,88 @@ button {
 main.vcard {
   overflow: visible !important;
 }
+
+/* === SmartCardLink mobile popup1 hard fix === */
+.vcard,
+.app-bg,
+main.vcard {
+  overflow: visible !important;
+}
+
+.card-surface {
+  height: auto !important;
+}
+
+#popup1 {
+  display: block !important;
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+}
+
+#popup1 .card-inner,
+#popup1 .popup1-inner {
+  display: flex !important;
+  flex-direction: column !important;
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+}
+
+#popup1 .contact-section,
+#popup1 .contact-box,
+#popup1 .box-main,
+#popup1 .contact-primary-wrap,
+#popup1 .actions-grid,
+#popup1 .col,
+#popup1 .nav-row {
+  overflow: visible !important;
+  flex-shrink: 0 !important;
+}
+
+#popup1 .box-list {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  max-height: none !important;
+  overflow: visible !important;
+  margin-top: 8px !important;
+}
+
+#popup1 .box-list[hidden] {
+  display: none !important;
+}
+
+#popup1 .contact-box {
+  margin-bottom: 8px !important;
+}
+
+@media (max-width: 520px) {
+  .vcard {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  #popup1 {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  #popup1 .card-inner,
+  #popup1 .popup1-inner {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    padding-bottom: 14px !important;
+  }
+
+  #popup1 .actions-grid {
+    margin-top: 8px !important;
+  }
+
+  #popup1 .nav-row {
+    margin-top: 8px !important;
+    padding-bottom: 4px !important;
+  }
+}
