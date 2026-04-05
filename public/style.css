@@ -1309,9 +1309,9 @@ button {
   }
 
   .vcard {
-    height: 90vh !important;
-    min-height: 90vh !important;
-    max-height: 90vh !important;
+    height: 83vh !important;
+    min-height: 83vh !important;
+    max-height: 83vh !important;
     overflow: hidden !important;
   }
 
@@ -1350,9 +1350,9 @@ button {
   }
 
   .vcard {
-    height: 90vh !important;
-    min-height: 90vh !important;
-    max-height: 90vh !important;
+    height: 83vh !important;
+    min-height: 83vh !important;
+    max-height: 83vh !important;
     overflow: visible !important; /* keep heartbeat glow visible */
   }
 
@@ -1406,3 +1406,4 @@ button {
     padding-bottom: 14px !important;
   }
 }
+
