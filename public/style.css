@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   --theme-color: #ffd700;
   --app-blue: #1338be;
   --green: #2ecc71;
@@ -1083,139 +1083,184 @@ button {
     padding: 8px 10px;
   }
 }
-/* === Popup1 expansion fix === */
-#popup1,
-.card-surface#popup1 {
-  height: auto !important;
-  min-height: unset !important;
-  overflow: visible !important;
-  align-self: start !important;
-}
-
-#popup1 .card-inner,
-#popup1 .popup1-inner {
-  height: auto !important;
-  min-height: unset !important;
-  overflow: visible !important;
-}
-
-#popup1 .contact-section,
-#popup1 .contact-box,
-#popup1 .box-main,
-#popup1 .contact-primary-wrap {
-  overflow: visible !important;
-}
-
-#popup1 .box-list {
-  position: static !important;
-  display: block !important;
-  width: 100% !important;
-  max-height: none !important;
-  margin-top: 10px !important;
-  overflow: visible !important;
-}
-
-#popup1 .box-list[hidden] {
-  display: none !important;
-}
-
-#popup1 .contact-box {
-  margin-bottom: 12px !important;
-}
-
-#popup1 .actions-grid,
-#popup1 .nav-row {
-  position: relative !important;
-  z-index: 1 !important;
-}
-
-.vcard,
-.app-bg,
-main.vcard {
-  overflow: visible !important;
-}
-
-/* === SmartCardLink mobile popup1 hard fix === */
-.vcard,
-.app-bg,
-main.vcard {
-  overflow: visible !important;
-}
-
-.card-surface {
-  height: auto !important;
-}
-
-#popup1 {
-  display: block !important;
-  height: auto !important;
-  min-height: 0 !important;
-  overflow: visible !important;
-}
-
-#popup1 .card-inner,
-#popup1 .popup1-inner {
-  display: flex !important;
-  flex-direction: column !important;
-  height: auto !important;
-  min-height: 0 !important;
-  overflow: visible !important;
-}
-
-#popup1 .contact-section,
-#popup1 .contact-box,
-#popup1 .box-main,
-#popup1 .contact-primary-wrap,
-#popup1 .actions-grid,
-#popup1 .col,
-#popup1 .nav-row {
-  overflow: visible !important;
-  flex-shrink: 0 !important;
-}
-
-#popup1 .box-list {
-  position: static !important;
-  display: block !important;
-  width: 100% !important;
-  max-height: none !important;
-  overflow: visible !important;
-  margin-top: 8px !important;
-}
-
-#popup1 .box-list[hidden] {
-  display: none !important;
-}
-
-#popup1 .contact-box {
-  margin-bottom: 8px !important;
-}
-
+/* === SmartCardLink popup1 stabilized sizing === */
 @media (max-width: 520px) {
+  .app-bg {
+    padding: 14px;
+    align-items: flex-start;
+  }
+
   .vcard {
-    min-height: 0 !important;
-    height: auto !important;
+    min-height: 0;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .card-surface,
+  #popup1 {
+    min-height: 0;
+    height: auto;
+    overflow: visible;
   }
 
   #popup1 {
-    height: auto !important;
-    min-height: 0 !important;
-    overflow: visible !important;
+    display: flex;
+    flex-direction: column;
   }
 
   #popup1 .card-inner,
   #popup1 .popup1-inner {
-    height: auto !important;
-    min-height: 0 !important;
-    overflow: visible !important;
-    padding-bottom: 14px !important;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
+    overflow: visible;
+    padding-bottom: 14px;
   }
 
-  #popup1 .actions-grid {
-    margin-top: 8px !important;
-  }
-
+  #popup1 .contact-section,
+  #popup1 .contact-box,
+  #popup1 .box-main,
+  #popup1 .contact-primary-wrap,
+  #popup1 .actions-grid,
+  #popup1 .col,
   #popup1 .nav-row {
-    margin-top: 8px !important;
-    padding-bottom: 4px !important;
+    overflow: visible;
+    flex-shrink: 0;
+  }
+
+  #popup1 .box-list {
+    position: static;
+    width: 100%;
+    max-height: none;
+    overflow: visible;
+    margin-top: 8px;
+  }
+
+  #popup1 .box-list[hidden] {
+    display: none !important;
+  }
+}
+
+.reminder-card {
+  width: min(100%, 380px);
+}
+
+.reminder-datetime-input {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 12px;
+}
+
+.access-btn[disabled] {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+@media (max-width: 520px) {
+  .access-modal {
+    padding: 14px;
+  }
+
+  .access-card,
+  .reminder-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 16px;
+  }
+
+  .access-input,
+  .reminder-datetime-input {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    font-size: 16px;
+  }
+
+  .access-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    min-height: auto !important;
+  }
+
+  .app-bg {
+    background: #fff !important;
+    padding: 0 !important;
+    display: block !important;
+    min-height: auto !important;
+  }
+
+  .vcard {
+    max-width: 100% !important;
+    width: 100% !important;
+    min-height: auto !important;
+    height: auto !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .vcard::before,
+  .vcard::after,
+  #popup2,
+  .access-modal,
+  .toast-host,
+  .nav-row,
+  .popup-footer-actions {
+    display: none !important;
+  }
+
+  #popup1,
+  .card-surface,
+  .popup1-inner {
+    display: block !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+    color: #000 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .brand-header {
+    background: #fff !important;
+    color: #000 !important;
+    border-bottom: 1px solid #ccc !important;
+  }
+
+  .full-name,
+  .job-name,
+  .title-position,
+  .contact-label,
+  .contact-primary,
+  .list-item,
+  .photo-area .not-provided {
+    color: #000 !important;
+    text-shadow: none !important;
+  }
+
+  .contact-box,
+  .hours-table td,
+  .hours-table th {
+    border-color: #ccc !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .actions-grid .action-btn {
+    border: 1px solid #bbb !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .photo-area {
+    border-bottom: 1px solid #ccc !important;
   }
 }
