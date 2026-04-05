@@ -1338,3 +1338,71 @@ button {
     padding-bottom: 0 !important;
   }
 }
+
+/* === Final mobile containment + glow + popup2 scroll restore === */
+@media (max-width: 520px) {
+  .app-bg {
+    min-height: 100vh;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 12px !important;
+    overflow: visible !important;
+  }
+
+  .vcard {
+    height: 90vh !important;
+    min-height: 90vh !important;
+    max-height: 90vh !important;
+    overflow: visible !important; /* keep heartbeat glow visible */
+  }
+
+  #popup1,
+  .card-surface#popup1 {
+    height: 100% !important;
+    min-height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  #popup1 .card-inner,
+  #popup1 .popup1-inner {
+    height: calc(100% - 34px) !important;
+    min-height: 0 !important;
+    max-height: calc(100% - 34px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-bottom: 10px !important;
+  }
+
+  #popup2 {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  #popup2 .popup-surface,
+  #popup2 .popup2-surface {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  #popup2 .card-inner,
+  #popup2 .popup2-inner {
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 14px !important;
+  }
+}
